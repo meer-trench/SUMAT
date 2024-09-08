@@ -1,0 +1,46 @@
+FROM ubuntu
+
+RUN apt-get update --fix-missing && apt-get install -y bash
+CMD ["bash"]
+ENV DEBIAN_FRONTEND="noninteractive"
+RUN apt-get install -y wget  libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion curl   grep   sed    dpkg  fuse  zip  build-essential    pkg-config    bzip2    ca-certificates  &&     apt-get clean
+
+#RUN yum install wget
+#ADD miniconda.sh ~
+
+RUN wget --no-check-certificate --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+RUN /bin/bash miniconda.sh -b -p /opt/conda &&     rm miniconda.sh &&     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh &&     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc &&     echo "conda activate base" >> ~/.bashrc &&     find /opt/conda/ -follow -type f -name '*.a' -delete &&     find /opt/conda/ -follow -type f -name '*.js.map' -delete 
+
+RUN /opt/conda/bin/conda config --add channels defaults &&     /opt/conda/bin/conda config --add channels bioconda &&     /opt/conda/bin/conda config --add channels conda-forge &&     /opt/conda/bin/conda config --add channels biobakery &&     /opt/conda/bin/conda config --add channels r
+
+RUN  /opt/conda/bin/conda install megahit && /opt/conda/bin/conda install snakemake && /opt/conda/bin/conda install kraken2 && /opt/conda/bin/conda install metawrap && /opt/conda/bin/conda install bwa
+
+RUN  /opt/conda/bin/conda install python=3.10 && /opt/conda/bin/conda install metaphlan=4.1
+RUN  /opt/conda/bin/conda install seqtk pigz
+
+RUN  /opt/conda/bin/conda install bracken
+
+RUN /opt/conda/bin/conda install -y mamba
+RUN /opt/conda/bin/mamba create -y --name metawrap-env --channel ursky metawrap-mg=1.3.2
+RUN /opt/conda/bin/conda install drep
+RUN /opt/conda/bin/conda install -c pytorch pytorch torchvision cudatoolkit=10.2
+RUN /opt/conda/bin/mamba create --name vamb vamb
+ENV PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
+
+
+#ENTRYPOINT ["bash"]
+
+#RUN /opt/conda/bin/conda update
+#RUN  /opt/conda/bin/conda install metaphlan=4.1 
+ADD fastp /opt/conda/bin/
+ADD test.smk .
+ADD server.py .
+ADD index.html .
+ADD scripts/ scripts/
+ADD run.sh .
+ADD split_concoct_bins.py /opt/conda/bin/
+
+RUN chmod 755 scripts/*
+RUN chmod 755 /opt/conda/bin/split_concoct_bins.py
+
+#RUN python server.py

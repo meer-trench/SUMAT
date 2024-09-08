@@ -10,6 +10,104 @@
         .tabs { display: flex; cursor: pointer; }
         .tabs div { padding: 10px; border: 1px solid #ccc; }
         .tabs .active { background-color: #ddd; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #fff;
+            background-color: #003366; /* 深蓝色背景 */
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .tabs {
+            display: flex;
+            margin-top: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+        .tabs div {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            background-color: #fff;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+        .tabs .active {
+            background-color: #ddd;
+            border-bottom: 2px solid #f4f4f9;
+        }
+        .tab {
+            display: none;
+            width: 80%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .tab.active {
+            display: block;
+        }
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        legend {
+            padding: 0 10px;
+            font-weight: bold;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #submitResponse,
+        #queryResponse {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .option-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
     </style>
 </head>
 <body>
@@ -21,27 +119,52 @@
     <div id="content1" class="tab active">
         <form id="submitForm" enctype="multipart/form-data">
             <fieldset>
-                <legend>请选择样本的多样性：</legend>
-                <input type="radio" id="diversity_high" name="diversity" value="High" required>
-                <label for="diversity_high">High</label><br>
-                <input type="radio" id="diversity_normal" name="diversity" value="Normal" required>
-                <label for="diversity_normal">Normal</label><br>
+                <legend>Plese choose the diversity of your sample：</legend>
+                <div class="option-group">
+                    <input type="radio" id="diversity_high" name="diversity" value="High" required>
+                    <label for="diversity_high">High</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="diversity_normal" name="diversity" value="Normal" required>
+                    <label for="diversity_normal">Normal</label>
+                </div>
             </fieldset>
             <fieldset>
-                <legend>请选择样品的预期新颖性：</legend>
-                <input type="radio" id="novelty_high" name="novelty" value="High" required>
-                <label for="novelty_high">High</label><br>
-                <input type="radio" id="novelty_low" name="novelty" value="Low" required>
-                <label for="novelty_low">Low</label><br>
+                <legend>Plese choose the expected novelty of your sample：</legend>
+                <div class="option-group">
+                    <input type="radio" id="novelty_high" name="novelty" value="High" required>
+                    <label for="novelty_high">High</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="novelty_low" name="novelty" value="Low" required>
+                    <label for="novelty_low">Low</label>
+                </div>
             </fieldset>
             <fieldset>
-                <legend>请选择您的资源情况：</legend>
-                <input type="radio" id="resources_sufficient" name="resources" value="sufficient" required>
-                <label for="resources_sufficient">充足</label><br>
-                <input type="radio" id="resources_appropriate" name="resources" value="appropriate" required>
-                <label for="resources_appropriate">适当</label><br>
-                <input type="radio" id="resources_shortage" name="resources" value="shortage" required>
-                <label for="resources_shortage">短缺</label><br>
+                <legend>Plese choose your resource situation：</legend>
+                <div class="option-group">
+                    <input type="radio" id="resources_sufficient" name="resources" value="sufficient" required>
+                    <label for="resources_sufficient">sufficient</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="resources_appropriate" name="resources" value="appropriate" required>
+                    <label for="resources_appropriate">appropriate</label>
+                </div>
+                <div class="option-group">
+                    <input type="radio" id="resources_shortage" name="resources" value="shortage" required>
+                    <label for="resources_shortage">shortage</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Target:</legend>
+                <div class="option-group">
+                    <input type="checkbox" id="target_profiling" name="target" value="profiling">
+                    <label for="target_profiling">Profiling</label>
+                </div>
+                <div class="option-group">
+                    <input type="checkbox" id="target_denovo" name="target" value="denovo_assembly">
+                    <label for="target_denovo">Denovo Assembly</label>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>Database Information:</legend>
@@ -57,13 +180,6 @@
                 <input type="text" id="adapter2" name="adapter2" required><br>
                 <label for="location">Location of your project:</label>
                 <input type="text" id="location" name="location" required><br>
-            </fieldset>
-            <fieldset>
-                <legend>Target:</legend>
-                <input type="checkbox" id="target_profiling" name="target" value="profiling">
-                <label for="target_profiling">Profiling</label><br>
-                <input type="checkbox" id="target_denovo" name="target" value="denovo_assembly">
-                <label for="target_denovo">Denovo Assembly</label><br>
             </fieldset>
             <fieldset>
                 <legend>Metadata File:</legend>
