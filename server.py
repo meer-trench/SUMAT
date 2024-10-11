@@ -93,11 +93,11 @@ location: {form_data['location']}
         subprocess.Popen(['python', f"scripts/allocate_runs_to_samples.py -i {project_path}/metadata_new.tsv -d {project_path} -r {project_path}/raw_data -l {project_path}/allo.log"])
 
         if 'profiling' in targets and 'denovo_assembly' in targets:
-            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until all"
+            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --resources mem_mb={str(args.mem)} --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until all"
         elif 'profiling' in targets:
-            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until target_profile"
+            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --resources mem_mb={str(args.mem)} --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until target_profile"
         elif 'denovo_assembly' in targets:
-            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until target_mags"
+            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --resources mem_mb={str(args.mem)} --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until target_mags"
         else:
             run_content = ""
 

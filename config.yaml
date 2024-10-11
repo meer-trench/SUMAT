@@ -1,0 +1,28 @@
+fastp:
+  t: 2
+  m: 1
+kraken2:
+  t: 2
+  m: 81
+checkm:
+  t: 2
+  m: 1
+megahit:
+  t: 2
+  m: 2
+metaphlan4:
+  t: 2
+  m: 31
+align:
+  t: 2
+  m: 2
+binning:
+  t: 2
+  m: 2
+gtdbtk:
+  t: 2
+  m: 81
+drep:
+  t: 2
+  m: 4
+

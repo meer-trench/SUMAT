@@ -94,6 +94,8 @@ rule fastp_not_merged:
     output:
         a1 = path + 'data/fastp_not_merged/{sample}.unmerged_1.fa.gz'
     threads: config['fastp']['t']
+    resources:
+        mem_mb=config['fastp']['m']
     params:
         a2 = path + 'data/fastp_not_merged/{sample}.unmerged_2.fa.gz',
         sq = config['sequencer'],
@@ -122,6 +124,8 @@ rule fastp:
         a1 = path + 'data/fastp_merged/{sample}.unmerged.1.fa.gz',
         a2 = path + 'data/fastp_merged/{sample}.unmerged.2.fa.gz'
     threads: config['fastp']['t']
+    resources:
+        mem_mb=config['fastp']['m']
     params:
         sq = config['sequencer'],
         sn = '{sample}',
@@ -144,6 +148,8 @@ rule pushcore_fastp:
         out_path = path + 'data/pushcore_fastp/{pushcore}/',
         raw = config['raw']
     threads: config['fastp']['t']
+    resources:
+        mem_mb=config['fastp']['m']
     shell:
         """
         python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}
@@ -158,6 +164,8 @@ rule megahit:
     output:
         mk = path + 'data/markers/megahit_pe_mk/{sample}.mk',
     threads: config['megahit']['t']
+    resources:
+        mem_mb=config['megahit']['m']
     params:
         sq = config['sequencer'],
         sn = '{sample}',
@@ -176,6 +184,8 @@ rule megahit_se:
     output:
         mk = path + 'data/markers/megahit_se_mk/{sample}.mk',
     threads: config['megahit']['t']
+    resources:
+        mem_mb=config['megahit']['m']
     params:
         sq = config['sequencer'],
         sn = '{sample}',
@@ -212,6 +222,8 @@ rule kraken2:
         report = path + 'data/kraken2/{sample}/{sample}.report',
         breport = path + 'data/kraken2/{sample}/{sample}.breport'
     threads: config['kraken2']['t']
+    resources:
+        mem_mb=config['kraken2']['m']
     params:
         sn = '{sample}',
         path = path + 'data/kraken2/{sample}/',
@@ -245,6 +257,8 @@ rule metaphlan4:
         mk = path + 'data/markers/metaphlan4_mk/{sample}.mk',
         profile = path + 'data/metaphlan4/{sample}/{sample}.metaphlan4.tsv'
     threads: config['metaphlan4']['t']
+    resources:
+        mem_mb=config['metaphlan4']['m']
     params:
         sn = '{sample}',
         path = path + 'data/metaphlan4/{sample}/',
@@ -276,6 +290,8 @@ rule binning_create_bam:
         bam = path + 'data/binning/{sample}/work_files/{sample}.unmerged.bam',
         mk = path + 'data/markers/metawrap_binning_bam/{sample}.mk'
     threads: config['align']['t']
+    resources:
+        mem_mb=config['align']['m']
     params:
         path = path + 'data/binning/{sample}/work_files',
         a2 = path + 'data/fastp_not_merged/{sample}.unmerged_2.fa.gz',
@@ -300,6 +316,8 @@ rule binning_metabat2:
     output:
         mk = path + 'data/markers/metawrap_binning_metabat2/{sample}.mk'
     threads: config['binning']['t']
+    resources:
+        mem_mb=config['binning']['m']
     params:
         path = path + 'data/binning/{sample}/'
     shell:
@@ -317,6 +335,8 @@ rule binning_maxbin2:
     output:
         mk = path + 'data/markers/metawrap_binning_maxbin2/{sample}.mk'
     threads: config['binning']['t']
+    resources:
+        mem_mb=config['binning']['m']
     params:
         path = path + 'data/binning/{sample}/',
     shell:
@@ -347,6 +367,8 @@ rule binning_concoct:
     output:
         mk = path + 'data/markers/metawrap_binning_concoct/{sample}.mk'
     threads: config['binning']['t']
+    resources:
+        mem_mb=config['binning']['m']
     params:
         path = path + 'data/binning/{sample}/'
     shell:
@@ -370,6 +392,8 @@ rule metawrap_bin_refinement:
     output:
         mk = path + 'data/markers/metawrap_bin_refinement/{sample}.mk'
     threads: config['binning']['t']
+    resources:
+        mem_mb=config['binning']['m']
     params:
         sn = '{sample}',
         path = path + 'data/bin_refinement/{sample}/',
@@ -434,6 +458,8 @@ rule gtdbtk_bins:
         in_path = path + 'data/drep_all_99/dereplicated_genomes/',
         out_path = path + 'data/gtdb_bins/'
     threads: config['gtdbtk']['t']
+    resources:
+        mem_mb=config['gtdbtk']['m']
     shell:
         """
         gtdbtk classify_wf --genome_dir {params.in_path} --out_dir {params.out_path} -x fa --cpus {threads} --pplacer_cpus 2
@@ -449,6 +475,8 @@ rule profiling_bowtie2_index:
         in_path = path + 'data/drep_all_99/dereplicated_genomes/',
         out_path = path + 'data/bins_bowtie2_index/'
     threads: config['align']['t']
+    resources:
+        mem_mb=config['align']['m']
     shell:
         """
         for i in `ls {params.in_path}`;do
@@ -470,6 +498,8 @@ rule profiling_bowtie2:
         a2 = path + 'data/fastp_not_merged/{sample}.unmerged_2.fa.gz',
         sq = config['sequencer']
     threads: config['align']['t']
+    resources:
+        mem_mb=config['align']['m']
     shell:
         """
         if [ "{params.sq}" == "pe" ]; then
@@ -618,6 +648,8 @@ rule drep_all_99:
     output:
         mk = path + 'data/markers/drep_all_99.mk'
     threads: config['drep']['t']
+    resources:
+        mem_mb=config['drep']['m']
     params:
         in_path = path + 'data/bin_passed_all/*.fa',
         out_path = path + 'data/drep_all_99/'
