@@ -97,7 +97,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     
 
 2. Input File Preparation
-   Prepare your input files according to the specified format and make sure it is in your project folder. The input file should be separated by tabs.
+   Prepare your input files according to the specified format and make sure it is in your project folder. The input file should be separated by tabs(`\t`) and in `.tsv` format.
 
    Input file format example:
     
@@ -139,7 +139,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 #### Use with Command line
 1. Input File Preparation
     
-    Prepare your input files according to the specified format and make sure it is in your project folder. The input file should be separated by tabs.
+    Prepare your input files according to the specified format and make sure it is in your project folder. The input file should be separated by tabs(`\t`).
 
     Example input file format:
     
@@ -195,7 +195,7 @@ sh intall.sh {your path}
 ```
 ### Analyze your data (source code)
 #### Input File Preparation
-Prepare your input files according to the specified format.The input file should be separated by tabs and in `.tsv` format.
+Prepare your input files according to the specified format.The input file should be separated by tabs(`\t`).
 
 Example input file format:
     
