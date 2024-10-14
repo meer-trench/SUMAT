@@ -3,7 +3,7 @@
 # Contents
 
 - [Introduction](#introduction)
-- [Toolkits Design](#toolkits-design)
+- [Design of the toolkit](#design-of-the-toolkit)
 - [How to use](#how-to-use)
     - [Docker mode](#docker-mode)
         1. [Download and Install](#download-and-install)
@@ -33,7 +33,7 @@ This project aims to develop a convenient and flexible toolkit for working with 
 In terms of operation mode, you can choose the operation mode of the command line according to the actual situation of your research team (more flexible, and more recommended for those who have a certain foundation in biological information and are familiar with the operation of the command line) or the operation mode of the graphical interface (more convenient operation).
 In terms of analysis method, you can choose to profile or denovo_assembly or all according to the project goals. At the same time, you can provide information on the diversity and novelty of your project sample, as well as your assessment of the resources available to you, and our toolkit will help you choose the most suitable analysis pipe for you.
 
-# Toolkits Design 
+# Design of the toolkit 
 
 ![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/flowchart.jpeg)
 
@@ -97,12 +97,12 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     
 
 2. Input File Preparation
-   Prepare your input files according to the specified format and make sure it is in your project folder. 
+   Prepare your input files according to the specified format and make sure it is in your project folder. The input file should be separated by tabs.
 
    Input file format example:
     
     ```plaintext
-    SampleID    fastq1  fastq2  bin_group
+    #SampleID    fastq1  fastq2  bin_group
     Sample001   reads1.1.fq.gz    reads1.2.fq.gz    group1
     Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
     ```
@@ -139,7 +139,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 #### Use with Command line
 1. Input File Preparation
     
-    Prepare your input files according to the specified format and make sure it is in your project folder. 
+    Prepare your input files according to the specified format and make sure it is in your project folder. The input file should be separated by tabs.
 
     Example input file format:
     
@@ -195,7 +195,7 @@ sh intall.sh {your path}
 ```
 ### Analyze your data (source code)
 #### Input File Preparation
-Prepare your input files according to the specified format.
+Prepare your input files according to the specified format.The input file should be separated by tabs and in `.tsv` format.
 
 Example input file format:
     
