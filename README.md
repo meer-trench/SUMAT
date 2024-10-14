@@ -171,11 +171,11 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     Run run.py with suitable parameters in this terminal. For example:
 
     ```
-    python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AGCT  --metadata metadata.tsv -t all
+    python run.py -d Normal -n Low -r Shortage -l /your/project/path --metadata metadata.tsv -t all
     ```
     If you want to use your own database, you can run like that:
     ```
-    python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AGCT -cdb /your/database/path -mdb /your/database/path -kdb /your/database/path --metadata metadata.tsv -t all
+    python run.py -d Normal -n Low -r Shortage -l /your/project/path -cdb /your/database/path -kdb /your/database/path --metadata metadata.tsv -t all
     ```
 
 
@@ -224,11 +224,11 @@ Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
 Run run.py with suitable parameters in this terminal. For example:
 
 ```
-python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AGCT  --metadata metadata.tsv -t all
+python run.py -d Normal -n Low -r Shortage -l /your/project/path --metadata metadata.tsv -t all
 ```
     
 If you want to use your own database, you can run like that:
 
 ```
-python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AGCT -cdb /your/database/path -mdb /your/database/path -kdb /your/database/path --metadata metadata.tsv -t all
+python run.py -d Normal -n Low -r Shortage -l /your/project/path -cdb /your/database/path -kdb /your/database/path --metadata metadata.tsv -t all
 ```
