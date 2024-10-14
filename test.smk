@@ -100,16 +100,16 @@ rule fastp_not_merged:
         sn = '{sample}',
         raw = config['location'],
         path = path + 'data/contigs/{sample}/',
-        r1 = config['adapter1'],
-        r2 = config['adapter2']
+        #r1 = config['adapter1'],
+        #r2 = config['adapter2']
     log: path + 'logs/fastp_not_merged/{sample}.json'
     shell:
         """
         if [ "{params.sq}" == "pe" ]; then
-            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -r {params.a2} -ad1 {params.r1} -ad2 {params.r2} -t {threads} -log {log}
+            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -r {params.a2} -t {threads} -log {log}
             if [ "$?" -ne 0 ]; then exit 1; fi
 	else
-            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -ad1 {params.r1} -t {threads} -log {log}
+            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1}  -t {threads} -log {log}
 	    if [ "$?" -ne 0 ]; then exit 1; fi
         fi
         """
@@ -127,12 +127,12 @@ rule fastp:
         sn = '{sample}',
         raw = config['location'],
         path = path + 'data/contigs/{sample}/',
-        r1 = config['adapter1'],
-        r2 = config['adapter2']
+        #r1 = config['adapter1'],
+        #r2 = config['adapter2']
     log: path + 'logs/fastp_merged/{sample}.json'
     shell:
         """
-        python3 scripts/run_fastp.py -i {input[0]} -w {params.raw}/raw_data -o {output.ma} -f {output.a1} -r {output.a2} -ad1 {params.r1} -ad2 {params.r2} -t {threads} -log {log}
+        python3 scripts/run_fastp.py -i {input[0]} -w {params.raw}/raw_data -o {output.ma} -f {output.a1} -r {output.a2} -t {threads} -log {log}
         """
 
 rule pushcore_fastp:
@@ -141,14 +141,14 @@ rule pushcore_fastp:
     output:
         mk = path + 'data/markers/pushcore_fastp/{pushcore}.mk'
     params:
-        r1 = config['adapter1'],
-        r2 = config['adapter2'],
+        #r1 = config['adapter1'],
+        #r2 = config['adapter2'],
         out_path = path + 'data/pushcore_fastp/{pushcore}/',
         raw = config['location']
     threads: config['fastp']['t']
     shell:
         """
-        python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}/raw_data -ad1 {params.r1} -ad2 {params.r2}
+        python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}/raw_data 
         touch {output.mk}
         """
 
@@ -250,10 +250,10 @@ rule metaphlan4:
     params:
         sn = '{sample}',
         path = path + 'data/metaphlan4/{sample}/',
-        db = config['mp_db']
+        #db = config['mp_db']
     shell:
         """
-        metaphlan --input_type fasta -t rel_ab --bowtie2db {params.db} -o {output.profile} --nproc {threads} --unclassified_estimation --bowtie2out {params.path}/{wildcards.sample}.bowtie2.txt  {input.a1}
+        metaphlan --input_type fasta -t rel_ab -o {output.profile} --nproc {threads} --unclassified_estimation --bowtie2out {params.path}/{wildcards.sample}.bowtie2.txt  {input.a1}
         touch {output.mk}
         """
 

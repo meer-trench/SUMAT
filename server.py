@@ -83,8 +83,6 @@ resources: {form_data['resources']}
 checkm_db: {form_data['checkm_db']}
 mp_db: {form_data['mp_db']}
 kraken2_db: {form_data['kraken2_db']}
-adapter1: {form_data['adapter1']}
-adapter2: {form_data['adapter2']}
 location: {project_path}
 """
         with open(os.path.join(project_path, 'config.yaml'), 'a') as config_file:

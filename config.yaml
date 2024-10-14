@@ -1,3 +1,5 @@
+data_type: pe
+max_data_size: 0.9374582739546895
 fastp:
   t: 2
   m: 1
@@ -25,35 +27,9 @@ gtdbtk:
 drep:
   t: 2
   m: 4
-
 diversity: Normal
 novelty: Low
 resources: Shortage
 location: test
-adapter1: AGCT
-adapter2: AGCT
-checkm_db: .
-mp_db: .
-kraken2_db: .
-target: all
-metadata: metadata.tsvdiversity: Normal
-novelty: Low
-resources: Shortage
-location: test
-adapter1: AGCT
-adapter2: AGCT
-checkm_db: .
-mp_db: .
-kraken2_db: .
-target: all
-metadata: metadata.tsvdiversity: Normal
-novelty: Low
-resources: Shortage
-location: test
-adapter1: AGCT
-adapter2: AGCT
-checkm_db: .
-mp_db: .
-kraken2_db: .
-target: all
-metadata: metadata.tsv
+checkm_db: /
+kraken2_db: /

@@ -20,8 +20,8 @@ parser.add_argument('-w', '--raw', default='/hwfssz1/ST_HEALTH/P18Z10200N0059/fa
 parser.add_argument('-t', '--threads', type=int, help='Number of threads.')
 parser.add_argument('-f', '--forward', help='Path to unmerged r1 file.')
 parser.add_argument('-r', '--reverse', help='Path to unmerged r2 file.')
-parser.add_argument('-ad1', help='Forward adaptor sequence.')
-parser.add_argument('-ad2', help='Reverse adaptor sequence.')
+#parser.add_argument('-ad1', help='Forward adaptor sequence.')
+#parser.add_argument('-ad2', help='Reverse adaptor sequence.')
 parser.add_argument('-log', default='log.tsv', help='Path to log file.')
 parser.add_argument('-d', '--dry_run', action='store_true', help='Indicator of dry-run.')
 args=parser.parse_args()
@@ -72,11 +72,11 @@ for key, value in path.items():
     cmd = ['fastp']
     cmd += ['-i ' + raw_path + key + '/' + value[0]]
     cmd += ['--out1 ' + tmp_seq + '.nomerged.1.fq.gz']
-    cmd += ['--adapter_sequence ' + ad1]
+#    cmd += ['--adapter_sequence ' + ad1]
     if len(value) == 2:
         cmd += ['-I ' + raw_path + key + '/' + value[1]]
         cmd += ['--out2 ' + tmp_seq + '.nomerged.2.fq.gz']
-        cmd += ['--adapter_sequence_r2 ' + ad2]
+#        cmd += ['--adapter_sequence_r2 ' + ad2]
     cmd += ['--length_required 100']
     cmd += ['--cut_front --cut_right -W 4 -M 20']
     cmd += ['-w ' + str(threads)]

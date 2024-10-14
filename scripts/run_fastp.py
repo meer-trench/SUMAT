@@ -22,8 +22,8 @@ parser.add_argument('-t', '--threads', type=int, help='Number of threads.')
 parser.add_argument('-o', '--output', help='Path to merged file.')
 parser.add_argument('-f', '--forward', help='Path to unmerged r1 file.')
 parser.add_argument('-r', '--reverse', help='Path to unmerged r2 file.')
-parser.add_argument('-ad1', help='Forward adaptor sequence.')
-parser.add_argument('-ad2', help='Reverse adaptor sequence.')
+#parser.add_argument('-ad1', help='Forward adaptor sequence.')
+#parser.add_argument('-ad2', help='Reverse adaptor sequence.')
 parser.add_argument('-log', default='log.tsv', help='Path to log file.')
 parser.add_argument('-d', '--dry_run', action='store_true', help='Indicator of dry-run.')
 args=parser.parse_args()
@@ -33,8 +33,8 @@ if not raw_path.endswith('/'): raw_path += '/'
 threads = args.threads
 merged_file = args.output
 unmerged_file = (args.forward, args.reverse)
-ad1 = args.ad1
-ad2 = args.ad2
+#ad1 = args.ad1
+#ad2 = args.ad2
 log_file = args.log
 dry_run = args.dry_run
 
@@ -83,8 +83,8 @@ for key, value in path.items():
     cmd += ['-m --merged_out ' + tmp_seq + '.merged.fq.gz']
     cmd += ['--out1 ' + tmp_seq + '.unmerged.1.fq.gz']
     cmd += ['--out2 ' + tmp_seq + '.unmerged.2.fq.gz']
-    cmd += ['--adapter_sequence ' + ad1]
-    cmd += ['--adapter_sequence_r2 ' + ad2]
+ #   cmd += ['--adapter_sequence ' + ad1]
+ #   cmd += ['--adapter_sequence_r2 ' + ad2]
     cmd += ['--length_required 100']
     cmd += ['--cut_front --cut_right -W 4 -M 20']
     cmd += ['-w ' + str(threads)]

@@ -25,6 +25,8 @@ RUN /opt/conda/bin/mamba create -y --name metawrap-env --channel ursky metawrap-
 RUN /opt/conda/bin/conda install drep
 RUN /opt/conda/bin/conda install -c pytorch pytorch torchvision cudatoolkit=10.2
 RUN /opt/conda/bin/mamba create --name vamb vamb
+RUN /opt/conda/bin/mamba create -n gtdbtk-2.1.1 -c conda-forge -c bioconda gtdbtk=2.1.1
+RUN /opt/conda/bin/metaphlan --install 
 ENV PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
 
 

@@ -22,8 +22,8 @@ parser.add_argument('-o', '--output', help='Path to the output folder for all sa
 parser.add_argument('-s', '--sequencer', choices=['mgi', 'other'], default='mgi', help='Sequencers')
 parser.add_argument('-log', default='log.tsv', help='Path to log file.')
 parser.add_argument('-d', '--dry_run', action='store_true', help='Indicator of dry-run.')
-parser.add_argument('-ad1', help='Forward adaptor sequence.')
-parser.add_argument('-ad2', help='Reverse adaptor sequence.')
+#parser.add_argument('-ad1', help='Forward adaptor sequence.')
+#parser.add_argument('-ad2', help='Reverse adaptor sequence.')
 
 args=parser.parse_args()
 
@@ -31,8 +31,8 @@ input_file = args.input
 raw_path = args.raw
 if not raw_path.endswith('/'): raw_path += '/'
 threads = args.threads
-ad1 = args.ad1
-ad2 = args.ad2
+#ad1 = args.ad1
+#ad2 = args.ad2
 mgi = False
 #if args.sequencer == 'mgi':
 #    mgi = True
@@ -81,8 +81,8 @@ for sample in pushcore.keys():
         cmd += ['-I ' + raw_path + path + '/' + path_fastq[path][1]]
         cmd += ['--out1 ' + tmp_seq + '.unmerged.1.fq.gz']
         cmd += ['--out2 ' + tmp_seq + '.unmerged.2.fq.gz']
-        if mgi: cmd += ['--adapter_sequence ' + ad1]
-        if mgi: cmd += ['--adapter_sequence_r2 ' + ad2]
+#        if mgi: cmd += ['--adapter_sequence ' + ad1]
+#        if mgi: cmd += ['--adapter_sequence_r2 ' + ad2]
         cmd += ['--length_required 100']
         cmd += ['--cut_front --cut_right -W 4 -M 20']
         cmd += ['-w ' + str(threads)]

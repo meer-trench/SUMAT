@@ -16,8 +16,8 @@ def parse_metadata(metadata_file, output_dir):
         lines = f.readlines()
 
     for line in lines:
-        if line == "":
-            break;
+        if '#' in line :
+            continue;
         parts = line.strip().split('\t')
         if len(parts)<2:
             break;
@@ -178,9 +178,9 @@ gtdbtk:
 drep:
   t: {effective_cpu_count}
   m: {effective_memory_limit:.0f}
-    """
+"""
     with open(os.path.join(output_dir,'config.yaml'), 'a') as file:
-        file.write(config_str.strip())
+        file.write(config_str)
 
     print("config.yaml is ready")
     return effective_cpu_count
