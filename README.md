@@ -4,7 +4,7 @@
 
 - [Introduction](#introduction)
 - [Toolkits Design](#toolkits-design)
-- [How to use](#usage-instructions)
+- [How to use](#how-to-use)
     - [Docker mode](#docker-mode)
         1. [Download and Install](#download-and-install)
         2. [Analyze your data](#analyze—your-data)
@@ -28,14 +28,17 @@
 
 
 # Introduction
+
 This project aims to develop a convenient and flexible toolkit for working with metagenomic data in different environments. With this toolkit, you can freely choose the operation mode and analysis method based on your background, local resources, project design, etc.
 In terms of operation mode, you can choose the operation mode of the command line according to the actual situation of your research team (more flexible, and more recommended for those who have a certain foundation in biological information and are familiar with the operation of the command line) or the operation mode of the graphical interface (more convenient operation).
 In terms of analysis method, you can choose to profile or denovo_assembly or all according to the project goals. At the same time, you can provide information on the diversity and novelty of your project sample, as well as your assessment of the resources available to you, and our toolkit will help you choose the most suitable analysis pipe for you.
 
 # Toolkits Design 
+
 ![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/flowchart.jpeg)
 
 # How to use
+
 ## Docker mode
 
 ### Download and Install
@@ -94,7 +97,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     
 
 2. Input File Preparation
-    Prepare your input files according to the specified format and make sure it is in your project folder. 
+   Prepare your input files according to the specified format and make sure it is in your project folder. 
 
    Input file format example:
     
@@ -104,7 +107,8 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
     ```
 
-3. Parameters
+4. Parameters
+   
     ![Submit Page](https://github.com/meer-trench/SUMAT/blob/main/submitpage.png)
 
     | Parameter   name      |   Description                              | Type |Required | Value               |
@@ -120,14 +124,14 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     | `checkm_db`| CheckM database path|text|optional| `/your/database/path`                          |
     | `kraken2_db`| Kraken2 database path database path|text|optional| `/your/database/path`                          |
     
-4. Task submission
+6. Task submission
 
     1. Open your browser and navigate to `http://localhost:8000`.
     2. Select the appropriate parameters and upload the metadata file.
     3. Click the "Submit" button to start the process.
     4. If success, You will get a taskid.
 
-5. Querying Run Logs
+7. Querying Run Logs
     1. Switch to the `Query` tab.
     2. Select the task ID generated when the task was submitted.
     3. Click the "Submit" button to view the logs.
