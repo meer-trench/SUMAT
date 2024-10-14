@@ -1,6 +1,4 @@
-# SUMAT
-
-A Scalable User-friendly Metagenomic Analysis Toolkit
+![SUMAT(A Scalable User-friendly Metagenomic Analysis Toolkit)](https://github.com/meeb-trench/SUMAT/blob/main/banner.png)
 
 ## Contents
 
@@ -39,15 +37,9 @@ We will use these tools (Don't worry, we will help you to install the dependecie
 - [checkM](https://github.com/Ecogenomics/CheckM)
 - [GTDBtk](https://github.com/Ecogenomics/GTDBTk)
 ## Toolkits Design 
-![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/flowchart.svg)
+![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/flowchart.png)
 
 ![Toolkits Design Flowchart2](https://github.com/meer-trench/SUMAT/blob/main/flowchart2.png)
-
-| Parameter         | Argument |  Description                              | Type |Type(graphic model) | Value               |
-|-------------------|--|--|--|------------------------------------------|------------------------------|
-| `diversity` | -d,--diversity|the expected diversity level of your sample | String|radio|['Normal', 'High']       |
-| `novelty`| -n, --novelty | the expected novelty level of your sample   | String|radio|['Low', 'High']      |
-| `resources` |-r, --resources       | Your resources situation.   |String|radio| ['Appropriate', 'Sufficient', 'Shortage']                     
 
 ## Usage Instructions
 ### Download and Installation
