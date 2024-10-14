@@ -7,7 +7,7 @@
 - [How to use](#how-to-use)
     - [Docker mode](#docker-mode)
         1. [Download and Install](#download-and-install)
-        2. [Analyze your data](#analyze—your-data)
+        2. [Analyze your data](#analyze-your-data)
             1. [Use with Graphical interface](#use-with-graphical-interface)
                 1. Start the server
                 2. Input File Preparation
@@ -197,7 +197,7 @@ run `install.sh` to download the Dependency software and database
 ```
 sh intall.sh {your path}
 ```
-### Use (source code)
+### Analyze your data (source code)
 #### Input File Preparation
 Prepare your input files according to the specified format.
 
