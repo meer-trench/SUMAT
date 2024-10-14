@@ -21,7 +21,7 @@
             
     - [Source code mode](#source-code-mode)
         1. [Download and Install](#download-and-install-git)
-        2. [Analyze your data](#analyze—your-data-source-code)
+        2. [Analyze your data](#analyze-your-data-source-code)
             1. Input File Preparation
             2. Parameters
             3. Start Running
@@ -185,7 +185,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 
 
 ## Source code mode
-### Download and Installation (git)
+### Download and Install (git)
 
 clone the project to your local server:
 
