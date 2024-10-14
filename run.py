@@ -17,7 +17,8 @@ def main():
     parser.add_argument('--metadata', required=True, help='Path to metadata.tsv file')
 
     args = parser.parse_args()
-
+    p1=subprocess.Popen(['python scripts/init.py %s/metadata.tsv -l %s' % (args.location,args.location)], shell =True)
+    p1.wait()
     config_content = f"""
 diversity: {args.diversity}
 novelty: {args.novelty}
@@ -31,8 +32,8 @@ kraken2_db: {args.kraken2_db}
 target: {args.target}
 metadata: {args.metadata}
 """
-
-    with open('config.yaml', 'w') as file:
+ 
+    with open('config.yaml', 'a') as file:
         file.write(config_content.strip())
 
     # Run the allocate_runs_to_samples.py script
@@ -43,9 +44,9 @@ metadata: {args.metadata}
 
     # Determine the target value for the --until parameter
     target_value = {
-        'profiling': 'target_profiling',
-        'denovo_assembly': 'target_denovo_assembly',
-        'all': 'target_all'
+        'profiling': 'target_profile',
+        'denovo_assembly': 'target_mags',
+        'all': 'all'
     }[args.target]
 
     # Run the Snakemake command

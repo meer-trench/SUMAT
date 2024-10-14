@@ -4,7 +4,7 @@ import os
 import sys
 SAMPLES = {}
 PUSHCORES ={}
-path = config['project']
+path = config['location']
 if not path.endswith('/'): path += '/'
 sample_path = path + 'data/samples/'
 group_path = path + 'data/pushcores/'
@@ -94,24 +94,22 @@ rule fastp_not_merged:
     output:
         a1 = path + 'data/fastp_not_merged/{sample}.unmerged_1.fa.gz'
     threads: config['fastp']['t']
-    resources:
-        mem_mb=config['fastp']['m']
     params:
         a2 = path + 'data/fastp_not_merged/{sample}.unmerged_2.fa.gz',
-        sq = config['sequencer'],
+        sq = config['data_type'],
         sn = '{sample}',
-        raw = config['raw'],
+        raw = config['location'],
         path = path + 'data/contigs/{sample}/',
-        r1 = config['r1'],
-        r2 = config['r2']
+        r1 = config['adapter1'],
+        r2 = config['adapter2']
     log: path + 'logs/fastp_not_merged/{sample}.json'
     shell:
         """
         if [ "{params.sq}" == "pe" ]; then
-            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw} -f {output.a1} -r {params.a2} -ad1 {params.r1} -ad2 {params.r2} -t {threads} -log {log}
+            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -r {params.a2} -ad1 {params.r1} -ad2 {params.r2} -t {threads} -log {log}
             if [ "$?" -ne 0 ]; then exit 1; fi
 	else
-            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw} -f {output.a1} -ad1 {params.r1} -t {threads} -log {log}
+            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -ad1 {params.r1} -t {threads} -log {log}
 	    if [ "$?" -ne 0 ]; then exit 1; fi
         fi
         """
@@ -124,19 +122,17 @@ rule fastp:
         a1 = path + 'data/fastp_merged/{sample}.unmerged.1.fa.gz',
         a2 = path + 'data/fastp_merged/{sample}.unmerged.2.fa.gz'
     threads: config['fastp']['t']
-    resources:
-        mem_mb=config['fastp']['m']
     params:
-        sq = config['sequencer'],
+        sq = config['data_type'],
         sn = '{sample}',
-        raw = config['raw'],
+        raw = config['location'],
         path = path + 'data/contigs/{sample}/',
-        r1 = config['r1'],
-        r2 = config['r2']
+        r1 = config['adapter1'],
+        r2 = config['adapter2']
     log: path + 'logs/fastp_merged/{sample}.json'
     shell:
         """
-        python3 scripts/run_fastp.py -i {input[0]} -w {params.raw} -o {output.ma} -f {output.a1} -r {output.a2} -ad1 {params.r1} -ad2 {params.r2} -t {threads} -log {log}
+        python3 scripts/run_fastp.py -i {input[0]} -w {params.raw}/raw_data -o {output.ma} -f {output.a1} -r {output.a2} -ad1 {params.r1} -ad2 {params.r2} -t {threads} -log {log}
         """
 
 rule pushcore_fastp:
@@ -145,14 +141,14 @@ rule pushcore_fastp:
     output:
         mk = path + 'data/markers/pushcore_fastp/{pushcore}.mk'
     params:
+        r1 = config['adapter1'],
+        r2 = config['adapter2'],
         out_path = path + 'data/pushcore_fastp/{pushcore}/',
-        raw = config['raw']
+        raw = config['location']
     threads: config['fastp']['t']
-    resources:
-        mem_mb=config['fastp']['m']
     shell:
         """
-        python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}
+        python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}/raw_data -ad1 {params.r1} -ad2 {params.r2}
         touch {output.mk}
         """
 
@@ -164,10 +160,8 @@ rule megahit:
     output:
         mk = path + 'data/markers/megahit_pe_mk/{sample}.mk',
     threads: config['megahit']['t']
-    resources:
-        mem_mb=config['megahit']['m']
     params:
-        sq = config['sequencer'],
+        sq = config['data_type'],
         sn = '{sample}',
         path = path + 'data/contigs/{sample}/'
     shell:
@@ -184,10 +178,8 @@ rule megahit_se:
     output:
         mk = path + 'data/markers/megahit_se_mk/{sample}.mk',
     threads: config['megahit']['t']
-    resources:
-        mem_mb=config['megahit']['m']
     params:
-        sq = config['sequencer'],
+        sq = config['data_type'],
         sn = '{sample}',
         path = path + 'data/contigs/{sample}/'
     shell:
@@ -198,7 +190,7 @@ rule megahit_se:
 
 rule megahit_result:
     input:
-        mk = path + 'data/markers/megahit_se_mk/{sample}.mk' if config['sequencer'] == 'se' else (
+        mk = path + 'data/markers/megahit_se_mk/{sample}.mk' if config['data_type'] == 'se' else (
             path + 'data/markers/megahit_pe_mk/{sample}.mk'
         )
     output:
@@ -222,12 +214,10 @@ rule kraken2:
         report = path + 'data/kraken2/{sample}/{sample}.report',
         breport = path + 'data/kraken2/{sample}/{sample}.breport'
     threads: config['kraken2']['t']
-    resources:
-        mem_mb=config['kraken2']['m']
     params:
         sn = '{sample}',
         path = path + 'data/kraken2/{sample}/',
-        db = config['kraken_db']
+        db = config['kraken2_db']
     shell:
         """
         kraken2  --use-names --db {params.db} --threads {threads} --output {params.path} --report {output.report}  {input.a1}
@@ -257,8 +247,6 @@ rule metaphlan4:
         mk = path + 'data/markers/metaphlan4_mk/{sample}.mk',
         profile = path + 'data/metaphlan4/{sample}/{sample}.metaphlan4.tsv'
     threads: config['metaphlan4']['t']
-    resources:
-        mem_mb=config['metaphlan4']['m']
     params:
         sn = '{sample}',
         path = path + 'data/metaphlan4/{sample}/',
@@ -290,12 +278,10 @@ rule binning_create_bam:
         bam = path + 'data/binning/{sample}/work_files/{sample}.unmerged.bam',
         mk = path + 'data/markers/metawrap_binning_bam/{sample}.mk'
     threads: config['align']['t']
-    resources:
-        mem_mb=config['align']['m']
     params:
         path = path + 'data/binning/{sample}/work_files',
         a2 = path + 'data/fastp_not_merged/{sample}.unmerged_2.fa.gz',
-        sq = config['sequencer']
+        sq = config['data_type']
     shell:
         """
         set +e
@@ -316,8 +302,6 @@ rule binning_metabat2:
     output:
         mk = path + 'data/markers/metawrap_binning_metabat2/{sample}.mk'
     threads: config['binning']['t']
-    resources:
-        mem_mb=config['binning']['m']
     params:
         path = path + 'data/binning/{sample}/'
     shell:
@@ -335,8 +319,6 @@ rule binning_maxbin2:
     output:
         mk = path + 'data/markers/metawrap_binning_maxbin2/{sample}.mk'
     threads: config['binning']['t']
-    resources:
-        mem_mb=config['binning']['m']
     params:
         path = path + 'data/binning/{sample}/',
     shell:
@@ -367,8 +349,6 @@ rule binning_concoct:
     output:
         mk = path + 'data/markers/metawrap_binning_concoct/{sample}.mk'
     threads: config['binning']['t']
-    resources:
-        mem_mb=config['binning']['m']
     params:
         path = path + 'data/binning/{sample}/'
     shell:
@@ -392,8 +372,6 @@ rule metawrap_bin_refinement:
     output:
         mk = path + 'data/markers/metawrap_bin_refinement/{sample}.mk'
     threads: config['binning']['t']
-    resources:
-        mem_mb=config['binning']['m']
     params:
         sn = '{sample}',
         path = path + 'data/bin_refinement/{sample}/',
@@ -458,8 +436,6 @@ rule gtdbtk_bins:
         in_path = path + 'data/drep_all_99/dereplicated_genomes/',
         out_path = path + 'data/gtdb_bins/'
     threads: config['gtdbtk']['t']
-    resources:
-        mem_mb=config['gtdbtk']['m']
     shell:
         """
         gtdbtk classify_wf --genome_dir {params.in_path} --out_dir {params.out_path} -x fa --cpus {threads} --pplacer_cpus 2
@@ -475,8 +451,6 @@ rule profiling_bowtie2_index:
         in_path = path + 'data/drep_all_99/dereplicated_genomes/',
         out_path = path + 'data/bins_bowtie2_index/'
     threads: config['align']['t']
-    resources:
-        mem_mb=config['align']['m']
     shell:
         """
         for i in `ls {params.in_path}`;do
@@ -496,10 +470,8 @@ rule profiling_bowtie2:
         sam = path + 'data/profiling_bowtie2/{sample}.sam',
         in_path = path + 'data/bins_bowtie2_index/',
         a2 = path + 'data/fastp_not_merged/{sample}.unmerged_2.fa.gz',
-        sq = config['sequencer']
+        sq = config['data_type']
     threads: config['align']['t']
-    resources:
-        mem_mb=config['align']['m']
     shell:
         """
         if [ "{params.sq}" == "pe" ]; then
@@ -648,8 +620,6 @@ rule drep_all_99:
     output:
         mk = path + 'data/markers/drep_all_99.mk'
     threads: config['drep']['t']
-    resources:
-        mem_mb=config['drep']['m']
     params:
         in_path = path + 'data/bin_passed_all/*.fa',
         out_path = path + 'data/drep_all_99/'

@@ -37,7 +37,7 @@ ADD test.smk .
 ADD server.py .
 ADD index.html .
 ADD scripts/ scripts/
-ADD run.sh .
+ADD run.py .
 ADD split_concoct_bins.py /opt/conda/bin/
 
 RUN chmod 755 scripts/*

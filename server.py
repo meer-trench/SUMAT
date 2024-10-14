@@ -5,18 +5,17 @@ import os
 import time
 import json
 import subprocess
-import argparse
+#import argparse
 from io import BytesIO
 import webbrowser
 PORT = 8000
 BASE_DIR = 'tasks'
 LOG_FILE = 'submit.log'
 
-parser = argparse.ArgumentParser(description="Run Snakemake with specified cores.")
-parser.add_argument('--cores', type=int, required=True, help='Number of cores to use')
-args = parser.parse_args()
+#parser = argparse.ArgumentParser(description="Run Snakemake with specified cores.")
+#parser.add_argument('--cores', type=int, required=True, help='Number of cores to use')
+#args = parser.parse_args()
 
-# 确保任务目录存在
 if not os.path.exists(BASE_DIR):
     os.makedirs(BASE_DIR)
 
@@ -38,7 +37,7 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def handle_submit(self):
         content_length = int(self.headers['Content-Length'])
         body = self.rfile.read(content_length)
-        print(body)
+        
         content_type = self.headers['Content-Type']
         boundary = content_type.split("=")[1].encode()
         parts = body.split(b'--' + boundary + b'\r\n')
@@ -54,12 +53,14 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 content = content.rstrip(b'\r\n')
                 disposition = headers.split(';')
                 name = disposition[1].split('=')[1].strip('"')
-                print(part)
                 if 'filename' in headers:
                     file_name = disposition[2].split('=')[1].strip('"')
                     file_data = content
                 else:
-                    form_data[name] = content.decode()
+                    if name in form_data:
+                        form_data[name] = form_data[name] + "," + content.decode()
+                    else:
+                        form_data[name] = content.decode()
 
         # if not file_name.endswith('.tsv'):
         #     self.send_response(400)
@@ -70,7 +71,11 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         task_id = str(int(time.time()))[-8:]
         project_path = os.path.join(form_data['location'], task_id)
         os.makedirs(project_path, exist_ok=True)
-        subprocess.Popen(['python', f"scripts/init.py {project_path}/metadata.tsv -l {project_path}"])
+        with open(os.path.join(project_path, 'metadata.tsv'), 'ab') as metadata_file:
+            metadata_file.write(file_data)
+        p1=subprocess.Popen(['python scripts/init.py %s/metadata.tsv -l %s' % (project_path,project_path)], shell =True)
+        p1.wait()
+        #print(cores)
         config_content = f"""
 diversity: {form_data['diversity']}
 novelty: {form_data['novelty']}
@@ -80,31 +85,31 @@ mp_db: {form_data['mp_db']}
 kraken2_db: {form_data['kraken2_db']}
 adapter1: {form_data['adapter1']}
 adapter2: {form_data['adapter2']}
-location: {form_data['location']}
+location: {project_path}
 """
-        with open(os.path.join(project_path, 'config.yaml'), 'w') as config_file:
+        with open(os.path.join(project_path, 'config.yaml'), 'a') as config_file:
             config_file.write(config_content)
 
-        with open(os.path.join(project_path, 'metadata.tsv'), 'wb') as metadata_file:
-            metadata_file.write(file_data)
+        #with open(os.path.join(project_path, 'metadata.tsv'), 'ab') as metadata_file:
+        #    metadata_file.write(file_data)
 
         targets = form_data.get('target', '').split(',')
-
-        subprocess.Popen(['python', f"scripts/allocate_runs_to_samples.py -i {project_path}/metadata_new.tsv -d {project_path} -r {project_path}/raw_data -l {project_path}/allo.log"])
-
+        #cores = subprocess.Popen(['python', f"scripts/init.py {project_path}/metadata.tsv -l {project_path}"])
+        subprocess.Popen(['python scripts/allocate_runs_to_samples.py -i %s/metadata_new.tsv -d %s -r %s/raw_data -l %s/allo.log' % (project_path,project_path,project_path,project_path)],shell=True)
+        #print(form_data)
         if 'profiling' in targets and 'denovo_assembly' in targets:
-            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --resources mem_mb={str(args.mem)} --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until all"
+            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50  --latency-wait 360 --printshellcmds --until all"
         elif 'profiling' in targets:
-            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --resources mem_mb={str(args.mem)} --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until target_profile"
+            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50  --latency-wait 360 --printshellcmds --until target_profile"
         elif 'denovo_assembly' in targets:
-            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --resources mem_mb={str(args.mem)} --cores {str(args.cores)} --latency-wait 360 --printshellcmds --until target_mags"
+            run_content = f"snakemake --snakefile test.smk --configfile {project_path}/config.yaml --rerun-incomplete --jobs 50 --latency-wait 360 --printshellcmds --until target_mags"
         else:
             run_content = ""
 
         with open(os.path.join(project_path, 'run.sh'), 'w') as run_file:
             run_file.write(run_content)
 
-        # subprocess.Popen(['bash', os.path.join(project_path, 'run.sh')])
+        subprocess.Popen(['bash', os.path.join(project_path, 'run.sh')])
 
         with open(os.path.join(BASE_DIR, LOG_FILE), 'a') as log_file:
             log_file.write(f"{task_id},{project_path},{time.ctime()}\n")

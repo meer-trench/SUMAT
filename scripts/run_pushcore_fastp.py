@@ -22,17 +22,22 @@ parser.add_argument('-o', '--output', help='Path to the output folder for all sa
 parser.add_argument('-s', '--sequencer', choices=['mgi', 'other'], default='mgi', help='Sequencers')
 parser.add_argument('-log', default='log.tsv', help='Path to log file.')
 parser.add_argument('-d', '--dry_run', action='store_true', help='Indicator of dry-run.')
+parser.add_argument('-ad1', help='Forward adaptor sequence.')
+parser.add_argument('-ad2', help='Reverse adaptor sequence.')
+
 args=parser.parse_args()
 
 input_file = args.input
 raw_path = args.raw
 if not raw_path.endswith('/'): raw_path += '/'
 threads = args.threads
+ad1 = args.ad1
+ad2 = args.ad2
 mgi = False
-if args.sequencer == 'mgi':
-    mgi = True
-    ad1 = 'AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA'
-    ad2 = 'AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG'
+#if args.sequencer == 'mgi':
+#    mgi = True
+#    ad1 = 'AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA'
+#    ad2 = 'AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG'
 output_path = args.output
 if not output_path.endswith('/'): output_path += '/'
 if not os.path.isdir(output_path): os.mkdir(output_path)
