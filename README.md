@@ -39,9 +39,9 @@ We will use these tools (Don't worry, we will help you to install the dependecie
 - [checkM](https://github.com/Ecogenomics/CheckM)
 - [GTDBtk](https://github.com/Ecogenomics/GTDBTk)
 ## Toolkits Design 
-![Toolkits Design Flowchart](flowchart.svg)
+![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/flowchart.svg)
 
-![Toolkits Design Flowchart2](flowchart2.png)
+![Toolkits Design Flowchart2](https://github.com/meer-trench/SUMAT/blob/main/flowchart2.png)
 
 | Parameter         | Argument |  Description                              | Type |Type(graphic model) | Value               |
 |-------------------|--|--|--|------------------------------------------|------------------------------|
@@ -148,7 +148,7 @@ python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AG
 
 5. You will get a taskid
 
-![Submit Page](./submitpage.png)
+![Submit Page](https://github.com/meer-trench/SUMAT/blob/main//submitpage.png)
 
 
 
@@ -157,5 +157,5 @@ python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AG
 2. Select the task ID generated when the task was submitted.
 3. Click the "Submit" button to view the logs.
 
-![Query Page](./query.png)
+![Query Page](https://github.com/meer-trench/SUMAT/blob/main//query.png)
 
