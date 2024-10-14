@@ -6,21 +6,22 @@
 - [Toolkits Design](#toolkits-design)
 - [How to use](#usage-instructions)
     - [Docker mode](#docker-mode)
-        1. [Download and Installation](#download-and-installation)
-        2. [Use](#use)
-            1. [Use with Command line](#use-with-command-line)
-                1. Input File Preparation
-                2. Parameters
-                3. Start Running
-            2. [Use with Graphical interface](#use-with-graphical-interface)
+        1. [Download and Install](#download-and-install)
+        2. [Analyze your data](#analyze—your-data)
+            1. [Use with Graphical interface](#use-with-graphical-interface)
                 1. Start the server
                 2. Input File Preparation
                 3. Parameters
                 4. Task submission
                 5. Querying Run Logs
+            2. [Use with Command line](#use-with-command-line)
+                1. Input File Preparation
+                2. Parameters
+                3. Start Running
+            
     - [Source code mode](#source-code-mode)
-        1. [Download and Installation](#download-and-installation-git)
-        2. [Use](#use-source-code)
+        1. [Download and Install](#download-and-install-git)
+        2. [Analyze your data](#analyze—your-data-source-code)
             1. Input File Preparation
             2. Parameters
             3. Start Running
@@ -37,7 +38,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 # How to use
 ## Docker mode
 
-### Download and Installation
+### Download and Install
 1. Prapare a computer with Linux system.
 2. Download and install a Docker. ( if you already have one, skip this step)
     
@@ -77,7 +78,62 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     ```
     We recommand at least 2 cpus and 32g memory to run.
 
-### Use
+### Analyze your data
+
+#### Use with Graphical interface
+1. Start the server
+
+    After you run your docker container, you will see the terminal enviroment move to this docker container, and you can use it as a usual terminal directly.
+
+    Run server.py with suitable parameters in this terminal :
+    ```
+    python server.py
+    ```
+
+    ![docker grafical](https://github.com/meer-trench/SUMAT/blob/main/docker_graphical.png)
+    
+
+2. Input File Preparation
+    Prepare your input files according to the specified format and make sure it is in your project folder. 
+
+   Input file format example:
+    
+    ```plaintext
+    SampleID    fastq1  fastq2  bin_group
+    Sample001   reads1.1.fq.gz    reads1.2.fq.gz    group1
+    Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
+    ```
+
+3. Parameters
+    ![Submit Page](https://github.com/meer-trench/SUMAT/blob/main/submitpage.png)
+
+    | Parameter   name      |   Description                              | Type |Required | Value               |
+    |-------------------|--|--|------------------------------------------|------------------------------|
+    | `target`| your running target |checkbox|Required| ['profiling', 'denovo_assembly', 'all']  |
+    | `metadata`|  your input file (tsv) with sample list |file|Required| `/your/metadata/file/path`                          |
+    | `diversity` | the expected diversity level of your sample | radio|Required|['Normal', 'High']       |
+    | `novelty`|  the expected novelty level of your sample   | radio|Required|['Low', 'High']      |
+    | `resources` | Your resources situation.   |radio|Required| ['Appropriate', 'Sufficient', 'Shortage']                       |
+    | `location` | Your project folder |text|Required     | `/your/project/path`                       |
+    | `adapter1`|adpter1 of your data|text|Required| `AGCTACTG`                          |
+    | `adapter2`| adpter2 of your data|text|Required when PE data| `AGCTACTG`                          |
+    | `checkm_db`| CheckM database path|text|optional| `/your/database/path`                          |
+    | `kraken2_db`| Kraken2 database path database path|text|optional| `/your/database/path`                          |
+    
+4. Task submission
+
+    1. Open your browser and navigate to `http://localhost:8000`.
+    2. Select the appropriate parameters and upload the metadata file.
+    3. Click the "Submit" button to start the process.
+    4. If success, You will get a taskid.
+
+5. Querying Run Logs
+    1. Switch to the `Query` tab.
+    2. Select the task ID generated when the task was submitted.
+    3. Click the "Submit" button to view the logs.
+
+    ![Query Page](https://github.com/meer-trench/SUMAT/blob/main/query.png)
+
 #### Use with Command line
 1. Input File Preparation
     
@@ -103,9 +159,8 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     | `location` | -l, --location | Your project folder |String|Required     | `/your/project/path`                       |
     | `adapter1`|-a1, --adapter1  | adpter1 of your data|String|Required| `AGCTACTG`                          |
     | `adapter2`|-a2, --adapter2  | adpter2 of your data|String|Required when PE data| `AGCTACTG`                          |
-    | `checkm_db`|-cdb, --checkm_db  | CheckM database path|String|Not Required| `/your/database/path`                          |
-    | `mp_db`|-mdb, --mp_db  | metaphlan4 database path|String|Not Required| `/your/database/path`                          |
-    | `kraken2_db`|-kdb, --kraken2_db  | Kraken2 database path database path|String|Not Required| `/your/database/path`                          |
+    | `checkm_db`|-cdb, --checkm_db  | CheckM database path|String|Optional| `/your/database/path`                          |
+    | `kraken2_db`|-kdb, --kraken2_db  | Kraken2 database path database path|String|Optional| `/your/database/path`                          |
     
 3. Start Running
 
@@ -123,62 +178,6 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     python run.py -d Normal -n Low -r Shortage -l /your/project/path -a1 AGCT -a2 AGCT -cdb /your/database/path -mdb /your/database/path -kdb /your/database/path --metadata metadata.tsv -t all
     ```
 
-
-#### Use with Graphical interface
-1. Start the server
-
-    After you run your docker container, you will see the terminal enviroment move to this docker container, and you can use it as a usual terminal directly.
-
-    Run server.py with suitable parameters in this terminal :
-    ```
-    python server.py
-    ```
-
-    ![docker grafical](https://github.com/meer-trench/SUMAT/blob/main/docker_graphical.png)
-    
-
-2. Input File Preparation
-    Prepare your input files according to the specified format and make sure it is in your project folder. 
-
-    Example input file format:
-    
-    ```plaintext
-    SampleID    fastq1  fastq2  bin_group
-    Sample001   reads1.1.fq.gz    reads1.2.fq.gz    group1
-    Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
-    ```
-
-3. Parameters
-
-    | Parameter   name      |   Description                              | Type |Required | Value               |
-    |-------------------|--|--|------------------------------------------|------------------------------|
-    | `target`| your running target |checkbox|Required| ['profiling', 'denovo_assembly', 'all']  |
-    | `metadata`|  your input file (tsv) with sample list |file|Required| `/your/metadata/file/path`                          |
-    | `diversity` | the expected diversity level of your sample | radio|Required|['Normal', 'High']       |
-    | `novelty`|  the expected novelty level of your sample   | radio|Required|['Low', 'High']      |
-    | `resources` | Your resources situation.   |radio|Required| ['Appropriate', 'Sufficient', 'Shortage']                       |
-    | `location` | Your project folder |text|Required     | `/your/project/path`                       |
-    | `adapter1`|adpter1 of your data|text|Required| `AGCTACTG`                          |
-    | `adapter2`| adpter2 of your data|text|Required when PE data| `AGCTACTG`                          |
-    | `checkm_db`| CheckM database path|text|Not Required| `/your/database/path`                          |
-    | `mp_db`| metaphlan4 database path|text|Not Required| `/your/database/path`                          |
-    | `kraken2_db`| Kraken2 database path database path|text|Not Required| `/your/database/path`                          |
-    
-4. Task submission
-
-    1. Open your browser and navigate to `http://localhost:8000`.
-    2. Select the appropriate parameters and upload the metadata file.
-    3. Click the "Submit" button to start the process.
-    4. If success, You will get a taskid.
-
-    ![Submit Page](https://github.com/meer-trench/SUMAT/blob/main/submitpage.png)
-
-5. Querying Run Logs
-    1. Switch to the `Query` tab.
-    2. Select the task ID generated when the task was submitted.
-    3. Click the "Submit" button to view the logs.
-
-    ![Query Page](https://github.com/meer-trench/SUMAT/blob/main/query.png)
 
 
 ## Source code mode
@@ -219,9 +218,8 @@ Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
 | `location` | -l, --location | Your project folder |String|Required     | `/your/project/path`                       |
 | `adapter1`|-a1, --adapter1  | adpter1 of your data|String|Required| `AGCTACTG`                          |
 | `adapter2`|-a2, --adapter2  | adpter2 of your data|String|Required when PE data| `AGCTACTG`                          |
-| `checkm_db`|-cdb, --checkm_db  | CheckM database path|String|Not Required| `/your/database/path`                          |
-| `mp_db`|-mdb, --mp_db  | metaphlan4 database path|String|Not Required| `/your/database/path`                          |
-| `kraken2_db`|-kdb, --kraken2_db  | Kraken2 database path database path|String|Not Required| `/your/database/path`                          |
+| `checkm_db`|-cdb, --checkm_db  | CheckM database path|String|optional| `/your/database/path`                          |
+| `kraken2_db`|-kdb, --kraken2_db  | Kraken2 database path database path|String|optional| `/your/database/path`                          |
 
 #### Start Running
 
