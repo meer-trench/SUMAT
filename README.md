@@ -1,4 +1,4 @@
-![SUMAT(A Scalable User-friendly Metagenomic Analysis Toolkit)](https://github.com/meer-trench/SUMAT/blob/main/banner.png)
+![SUMAT(A Scalable User-friendly Metagenomic Analysis Toolkit)](https://github.com/meer-trench/SUMAT/blob/main/picture/banner.png)
 
 # Contents
 
@@ -35,7 +35,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 
 # Design of the toolkit 
 
-![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/flowchart.jpeg)
+![Toolkits Design Flowchart](https://github.com/meer-trench/SUMAT/blob/main/picture/flowchart.jpeg)
 
 # How to use
 
@@ -93,7 +93,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     python server.py
     ```
 
-    ![docker grafical](https://github.com/meer-trench/SUMAT/blob/main/docker_graphical.png)
+    ![docker grafical](https://github.com/meer-trench/SUMAT/blob/main/picture/docker_graphical.png)
     
 
 2. Input File Preparation
@@ -109,7 +109,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 
 4. Parameters
    
-    ![Submit Page](https://github.com/meer-trench/SUMAT/blob/main/submitpage.png)
+    ![Submit Page](https://github.com/meer-trench/SUMAT/blob/main/picture/submitpage.png)
 
     | Parameter   name      |   Description                              | Type |Required | Value               |
     |-------------------|--|--|------------------------------------------|------------------------------|
@@ -134,7 +134,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     2. Select the task ID generated when the task was submitted.
     3. Click the "Submit" button to view the logs.
 
-    ![Query Page](https://github.com/meer-trench/SUMAT/blob/main/query.png)
+    ![Query Page](https://github.com/meer-trench/SUMAT/blob/main/picture/query.png)
 
 #### Use with Command line
 1. Input File Preparation
@@ -166,7 +166,7 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
 
     After you run your docker container, you will see the terminal enviroment move to this docker container, and you can use it as a usual terminal directly.
     
-    ![docker command line](https://github.com/meer-trench/SUMAT/blob/main/docker_command_line.png)
+    ![docker command line](https://github.com/meer-trench/SUMAT/blob/main/picture/docker_command_line.png)
     
     Run run.py with suitable parameters in this terminal. For example:
 
