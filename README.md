@@ -119,8 +119,6 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     | `novelty`|  the expected novelty level of your sample   | radio|Required|['Low', 'High']      |
     | `resources` | Your resources situation.   |radio|Required| ['Appropriate', 'Sufficient', 'Shortage']                       |
     | `location` | Your project folder |text|Required     | `/your/project/path`                       |
-    | `adapter1`|adpter1 of your data|text|Required| `AGCTACTG`                          |
-    | `adapter2`| adpter2 of your data|text|Required when PE data| `AGCTACTG`                          |
     | `checkm_db`| CheckM database path|text|optional| `/your/database/path`                          |
     | `kraken2_db`| Kraken2 database path database path|text|optional| `/your/database/path`                          |
     
@@ -161,8 +159,6 @@ In terms of analysis method, you can choose to profile or denovo_assembly or all
     | `novelty`| -n, --novelty | the expected novelty level of your sample   | String|Required|['Low', 'High']      |
     | `resources` |-r, --resources       | Your resources situation.   |String|Required| ['Appropriate', 'Sufficient', 'Shortage']                       |
     | `location` | -l, --location | Your project folder |String|Required     | `/your/project/path`                       |
-    | `adapter1`|-a1, --adapter1  | adpter1 of your data|String|Required| `AGCTACTG`                          |
-    | `adapter2`|-a2, --adapter2  | adpter2 of your data|String|Required when PE data| `AGCTACTG`                          |
     | `checkm_db`|-cdb, --checkm_db  | CheckM database path|String|Optional| `/your/database/path`                          |
     | `kraken2_db`|-kdb, --kraken2_db  | Kraken2 database path database path|String|Optional| `/your/database/path`                          |
     
@@ -220,8 +216,6 @@ Sample002   reads2.1.fq.gz    reads2.2.fq.gz    group1
 | `novelty`| -n, --novelty | the expected novelty level of your sample   | String|Required|['Low', 'High']      |
 | `resources` |-r, --resources       | Your resources situation.   |String|Required| ['Appropriate', 'Sufficient', 'Shortage']                       |
 | `location` | -l, --location | Your project folder |String|Required     | `/your/project/path`                       |
-| `adapter1`|-a1, --adapter1  | adpter1 of your data|String|Required| `AGCTACTG`                          |
-| `adapter2`|-a2, --adapter2  | adpter2 of your data|String|Required when PE data| `AGCTACTG`                          |
 | `checkm_db`|-cdb, --checkm_db  | CheckM database path|String|optional| `/your/database/path`                          |
 | `kraken2_db`|-kdb, --kraken2_db  | Kraken2 database path database path|String|optional| `/your/database/path`                          |
 
