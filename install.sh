@@ -20,8 +20,8 @@ install_conda() {
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
     bash miniconda.sh -b -p "$install_dir"
     #rm miniconda.sh
-    export PATH="$install_dir/miniconda/bin:$PATH"
-    export PYTHONPATH="$install_dir/miniconda/bin"
+    export PATH="$install_dir/bin:$PATH"
+    export PYTHONPATH="$install_dir/bin"
     echo "Conda installation completed."
 }
 
@@ -42,9 +42,10 @@ install_software() {
     conda install -y -c pytorch pytorch torchvision cudatoolkit=10.2
     mamba create -y --name vamb vamb
     mamba create -y -n gtdbtk-2.1.1 -c conda-forge -c bioconda gtdbtk=2.1.1
-    #export PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
+    export PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
     conda activate gtdbtk-2.1.1
     download-db.sh
+    metaphlan --install
     echo "Software installation completed."
 }
 
