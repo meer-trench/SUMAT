@@ -32,7 +32,7 @@ install_software() {
 
     conda install -y megahit  snakemake kraken2  metawrap  bwa
 
-    conda install -y python=3.10 && conda install metaphlan=4.1
+    conda install -y python=3.10 && conda -y install metaphlan=4.1
     conda install -y seqtk pigz
     conda install -y bracken
 
@@ -42,7 +42,7 @@ install_software() {
     conda install -y -c pytorch pytorch torchvision cudatoolkit=10.2
     mamba create -y --name vamb vamb
     mamba create -y -n gtdbtk-2.1.1 -c conda-forge -c bioconda gtdbtk=2.1.1
-    export PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
+    export PATH="$install_dir/envs/vamb/bin:$install_dir/envs/metawrap-env/bin:$install_dir/bin:$PATH"
     conda activate gtdbtk-2.1.1
     download-db.sh
     metaphlan --install
