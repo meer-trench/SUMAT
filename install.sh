@@ -33,7 +33,7 @@ install_software() {
 
     conda install -y megahit  snakemake kraken2  metawrap  bwa
 
-    conda install -y python=3.10 && conda install metaphlan=4.1
+    conda install -y python=3.10 && conda -y install metaphlan=4.1
     conda install -y seqtk pigz
     conda install -y bracken
 
