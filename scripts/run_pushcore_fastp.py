@@ -24,13 +24,13 @@ parser.add_argument('-log', default='log.tsv', help='Path to log file.')
 parser.add_argument('-d', '--dry_run', action='store_true', help='Indicator of dry-run.')
 #parser.add_argument('-ad1', help='Forward adaptor sequence.')
 #parser.add_argument('-ad2', help='Reverse adaptor sequence.')
-
+parser.add_argument('-tmp', default='TMP/', help='Path to tmp file.')
 args=parser.parse_args()
 
 input_file = args.input
 raw_path = args.raw
 if not raw_path.endswith('/'): raw_path += '/'
-threads = args.threads
+threads = int(args.threads/2)
 #ad1 = args.ad1
 #ad2 = args.ad2
 mgi = False
@@ -43,7 +43,7 @@ if not output_path.endswith('/'): output_path += '/'
 if not os.path.isdir(output_path): os.mkdir(output_path)
 log_file = args.log
 dry_run = args.dry_run
-
+tmp_path = args.tmp
 # Get per sample path
 pushcore = {}
 with open(input_file, 'r') as f:
@@ -74,7 +74,7 @@ for sample in pushcore.keys():
     for path in pushcore[sample]:
         print('Run fastp on Sample: {0} and Path: {1}'.format(sample, path))
         hash_object = hashlib.md5((input_file+sample+path+'pushcore').encode())
-        tmp_seq = 'TMP/tmp_' + hash_object.hexdigest()
+        tmp_seq = tmp_path + '/tmp_' + hash_object.hexdigest()
         tmp.append(tmp_seq)
         cmd = ['fastp']
         cmd += ['-i ' + raw_path + path + '/' + path_fastq[path][0]]

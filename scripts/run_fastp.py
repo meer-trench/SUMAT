@@ -25,19 +25,20 @@ parser.add_argument('-r', '--reverse', help='Path to unmerged r2 file.')
 #parser.add_argument('-ad1', help='Forward adaptor sequence.')
 #parser.add_argument('-ad2', help='Reverse adaptor sequence.')
 parser.add_argument('-log', default='log.tsv', help='Path to log file.')
+parser.add_argument('-tmp', default='TMP/', help='Path to tmp file.')
 parser.add_argument('-d', '--dry_run', action='store_true', help='Indicator of dry-run.')
 args=parser.parse_args()
 input_file = args.input
 raw_path = args.raw
 if not raw_path.endswith('/'): raw_path += '/'
-threads = args.threads
+threads = int(args.threads/2)
 merged_file = args.output
 unmerged_file = (args.forward, args.reverse)
 #ad1 = args.ad1
 #ad2 = args.ad2
 log_file = args.log
 dry_run = args.dry_run
-
+tmp_path = args.tmp
 # Check if input file ends with .gz
 if merged_file.endswith('.gz'):
     pass
@@ -75,7 +76,7 @@ tmp = []
 for key, value in path.items():
     print('Run fastp on path {0}'.format(key))
     hash_object = hashlib.md5((input_file+key).encode())
-    tmp_seq = 'TMP/tmp_' + hash_object.hexdigest()
+    tmp_seq = tmp_path + 'tmp_' + hash_object.hexdigest()
     tmp.append(tmp_seq)
     cmd = ['fastp']
     cmd += ['-i ' + raw_path + key + '/' + value[0]]

@@ -57,7 +57,7 @@ for key, value in samples.items():
             if file.endswith('.fq.gz'):
                 fq_files.append(file)
         fq_files.sort()
-        print(fq_files)
+        #print(fq_files)
         if len(fq_files) == 2 and fq_files[0].endswith('_1.fq.gz') and fq_files[1].endswith('_2.fq.gz'):
             path_checker[index] = True
         #except FileNotFoundError:

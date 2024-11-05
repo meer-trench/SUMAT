@@ -151,8 +151,9 @@ def write_config_file(max_data_size):
 #        raise ValueError("Error: Effective memory limit is less than the required memory for metaphlan4.")
 
     config_str = f"""
+threads: {effective_cpu_count}
 fastp:
-  t: {min(16, effective_cpu_count)}
+  t: {min(16, effective_cpu_count/2):.0f}
   m: {min(max_data_size, effective_memory_limit):.0f}
 kraken2:
   t: {min(16, effective_cpu_count)}

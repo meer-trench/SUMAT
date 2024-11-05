@@ -1,1 +1,9 @@
 data
+.dmanifest
+.snakemake/
+distributions/
+fastp.html
+test/
+test2/
+wget-log
+.gitignore

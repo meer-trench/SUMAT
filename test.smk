@@ -9,14 +9,14 @@ if not path.endswith('/'): path += '/'
 sample_path = path + 'data/samples/'
 group_path = path + 'data/pushcores/'
 
-folder_checks = ['TMP/', path + 'data/contigs',
+folder_checks = [path + 'TMP/', path + 'data/contigs',
                  path + 'data/binning/',
                  path + 'data/bin_refinement/',
                  path + 'data/bin_passed_all/',
                  path + 'data/contigs_for_binning/',
                  path + 'data/gather_all_checkm_csv/']
 
-if config['resources'] == 'sufficient':
+if config['resources'] == 'Sufficient':
     folder_checks.extend([path + 'data/pushcore_fastp/',
                  path + 'data/pushcore_bwa_index/',
                  path + 'data/pushcore_bwa_mem/',
@@ -68,7 +68,7 @@ rule all:
 
 rule target_profile:
     input:
-        (path + 'data/markers/profiling_fpkm_all/all.mk',path + 'data/markers/metaphlan4_mk/all.mk',path + 'data/markers/kraken2_mk/all.mk') if config['resources'] == 'sufficient' else (
+        (path + 'data/markers/profiling_fpkm_all/all.mk',path + 'data/markers/metaphlan4_mk/all.mk',path + 'data/markers/kraken2_mk/all.mk') if config['resources'] == 'Sufficient' else (
             path + 'data/markers/metaphlan4_mk/all.mk' if config['novelty'] == 'Low' else path + 'data/markers/kraken2_mk/all.mk'
         )
     output:
@@ -100,16 +100,17 @@ rule fastp_not_merged:
         sn = '{sample}',
         raw = config['location'],
         path = path + 'data/contigs/{sample}/',
+	tmp_path = path + '/TMP/',
         #r1 = config['adapter1'],
         #r2 = config['adapter2']
     log: path + 'logs/fastp_not_merged/{sample}.json'
     shell:
         """
         if [ "{params.sq}" == "pe" ]; then
-            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -r {params.a2} -t {threads} -log {log}
+            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1} -r {params.a2} -t {threads} -log {log} -tmp {params.tmp_path}
             if [ "$?" -ne 0 ]; then exit 1; fi
 	else
-            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1}  -t {threads} -log {log}
+            scripts/run_fastp_not_merge.py -i {input[0]} -w {params.raw}/raw_data -f {output.a1}  -t {threads} -log {log} -tmp {params.tmp_path}
 	    if [ "$?" -ne 0 ]; then exit 1; fi
         fi
         """
@@ -125,6 +126,7 @@ rule fastp:
     params:
         sq = config['data_type'],
         sn = '{sample}',
+	tmp_path = path + '/TMP/',
         raw = config['location'],
         path = path + 'data/contigs/{sample}/',
         #r1 = config['adapter1'],
@@ -132,7 +134,7 @@ rule fastp:
     log: path + 'logs/fastp_merged/{sample}.json'
     shell:
         """
-        python3 scripts/run_fastp.py -i {input[0]} -w {params.raw}/raw_data -o {output.ma} -f {output.a1} -r {output.a2} -t {threads} -log {log}
+        python3 scripts/run_fastp.py -i {input[0]} -w {params.raw}/raw_data -o {output.ma} -f {output.a1} -r {output.a2} -t {threads} -log {log} -tmp {params.tmp_path}
         """
 
 rule pushcore_fastp:
@@ -144,11 +146,12 @@ rule pushcore_fastp:
         #r1 = config['adapter1'],
         #r2 = config['adapter2'],
         out_path = path + 'data/pushcore_fastp/{pushcore}/',
+	tmp_path = path + '/TMP/',
         raw = config['location']
     threads: config['fastp']['t']
     shell:
         """
-        python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}/raw_data 
+        python scripts/run_pushcore_fastp.py -i {input.pc} -o {params.out_path} -t {threads} -w {params.raw}/raw_data -tmp {params.tmp_path}
         touch {output.mk}
         """
 
@@ -378,11 +381,11 @@ rule metawrap_bin_refinement:
         metabat2 = path + 'data/binning/{sample}/metabat2_bins/',
         maxbin2 = path + 'data/binning/{sample}/maxbin2_bins/',
         concoct = path + 'data/binning/{sample}/concoct_bins/',
-        db = config['checkm_db']
+        #db = config['checkm_db']
     shell:
         """
         set +e
-	checkm data setRoot {params.db}
+	#checkm data setRoot {params.db}
         python scripts/run_metawrap_bin_refinement.py {params.metabat2} {params.maxbin2} {params.concoct} {params.path} {threads}
         if [ -d "{params.path}metawrap_50_10_bins/" ]
         then
@@ -526,17 +529,18 @@ rule profiling_jgi_depth:
 
 rule checkm:
     input:
-        mk = path + 'data/markers/pushcore_vamb/{pushcore}.mk' if config['resources'] == 'sufficient' else path + 'data/markers/metawrap_binning_metabat2/{sample}.mk' if config['resources'] == 'shortage' else ''
+        mk = path + 'data/markers/pushcore_vamb/{pushcore}.mk' if config['resources'] == 'Sufficient' else path + 'data/markers/metawrap_binning_metabat2/{sample}.mk' if config['resources'] == 'Shortage' else ''
     output:
-        rp = path + 'data/pushcore_checkm/report_{pushcore}.tsv' if config['resources'] == 'sufficient' else path + 'data/checkm/report_{sample}.tsv' if config['resources'] == 'shortage' else 'report',
-        mk = path + 'data/markers/pushcore_checkm/{pushcore}.mk' if config['resources'] == 'sufficient' else path + 'data/markers/checkm/{sample}.mk' if config['resources'] == 'shortage' else 'data/markers/checkm/no.mk'
+        rp = path + 'data/pushcore_checkm/report_{pushcore}.tsv' if config['resources'] == 'Sufficient' else path + 'data/checkm/report_{sample}.tsv' if config['resources'] == 'Shortage' else 'report',
+        mk = path + 'data/markers/pushcore_checkm/{pushcore}.mk' if config['resources'] == 'Sufficient' else path + 'data/markers/checkm/{sample}.mk' if config['resources'] == 'Shortage' else 'data/markers/checkm/no.mk'
     threads: config['checkm']['t']
     params:
-        sn = '{pushcore}' if config['resources'] == 'sufficient' else '{sample}' if config['resources'] == 'shortage' else None,
-        out_path = path + 'data/pushcore_checkm/{pushcore}/' if config['resources'] == 'sufficient' else path + 'data/checkm/{sample}/'  if config['resources'] == 'shortage' else '',
-        in_path = path + 'data/pushcore_vamb_bins/{pushcore}/bins/' if config['resources'] == 'sufficient' else  path + 'data/binning/{sample}/metabat2_bins/'  if config['resources'] == 'shortage' else ''
+        sn = '{pushcore}' if config['resources'] == 'Sufficient' else '{sample}' if config['resources'] == 'Shortage' else None,
+        out_path = path + 'data/pushcore_checkm/{pushcore}/' if config['resources'] == 'Sufficient' else path + 'data/checkm/{sample}/'  if config['resources'] == 'Shortage' else '',
+        in_path = path + 'data/pushcore_vamb_bins/{pushcore}/bins/' if config['resources'] == 'Sufficient' else  path + 'data/binning/{sample}/metabat2_bins/'  if config['resources'] == 'Shortage' else ''
     shell:
         """
+	#for file in {params.in_path}*.fa; do mv $file {params.in_path}$(basename $file .fa).fna; done
         checkm lineage_wf {params.in_path} {params.out_path} -t {threads} -x fna -f {output.rp} --tab_table
         touch {output.mk}
         """
@@ -616,7 +620,7 @@ rule drep_info:
 
 rule drep_all_99:
     input:
-        csv = path + 'data/checkm_all_passed_bins.csv' if config['resources'] == 'appropriate' else path + 'data/checkm_metabat2_passed_bins.csv' if config['resources'] == 'shortage' else path + 'data/all_passed_bins.csv',
+        csv = path + 'data/checkm_all_passed_bins.csv' if config['resources'] == 'Appropriate' else path + 'data/checkm_metabat2_passed_bins.csv' if config['resources'] == 'Shortage' else path + 'data/all_passed_bins.csv',
     output:
         mk = path + 'data/markers/drep_all_99.mk'
     threads: config['drep']['t']

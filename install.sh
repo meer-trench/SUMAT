@@ -5,7 +5,8 @@ check_conda() {
     if command -v conda
     then
         echo "Conda is already installed."
-        return 0
+        install_dir=$(dirname $(dirname $(which conda)))
+	return 0
     else
         echo "Conda is not installed."
         return 1
@@ -17,11 +18,11 @@ install_conda() {
     echo "Installing Conda..."
     local install_dir=$1
     echo "Installing Conda to the directory: $install_dir..."
-    #wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-    #bash miniconda.sh -b -p "$install_dir"
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    bash miniconda.sh -b -p "$install_dir"
     #rm miniconda.sh
-    export PATH="$install_dir/miniconda/bin:$PATH"
-    export PYTHONPATH="$install_dir/miniconda/bin"
+    export PATH="$install_dir/bin:$PATH"
+    export PYTHONPATH="$install_dir/bin"
     echo "Conda installation completed."
 }
 
@@ -42,19 +43,33 @@ install_software() {
     conda install -y -c pytorch pytorch torchvision cudatoolkit=10.2
     mamba create -y --name vamb vamb
     mamba create -y -n gtdbtk-2.1.1 -c conda-forge -c bioconda gtdbtk=2.1.1
-    #export PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
-    conda activate gtdbtk-2.1.1
-    download-db.sh
+    #export PATH="$install_dir/bin:$install_dir/envs/gtdbtk-2.1.1/bin:$install_dir/envs/vamb/bin:$install_dir/envs/metawrap-env/bin:$PATH"
+    #download-db.sh
+    #metaphlan --install
     echo "Software installation completed."
 }
 
 set_database() {
 	local install_dir=$1
-	wget https://genome-idx.s3.amazonaws.com/kraken/k2_pluspf_20240605.tar.gz $install_dir
-	wget https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz $install_dir
-	tar -zxvf $install_dir/k2_pluspf_20240605.tar.gz 
-	tar -zxvf $install_dir/checkm_data_2015_01_16.tar.gz
+	export PATH="$install_dir/bin:$install_dir/envs/gtdbtk-2.1.1/bin:$install_dir/envs/vamb/bin:$install_dir/envs/metawrap-env/bin:$PATH"
+	download-db.sh
+	metaphlan --install
+	wget -P $install_dir https://genome-idx.s3.amazonaws.com/kraken/k2_pluspf_20240605.tar.gz
+	#wget -P $install_dir https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz 
+	#wget -P $install_dir https://data.gtdb.ecogenomic.org/releases/release207/207.0/auxillary_files/gtdbtk_r207_v2_data.tar.gz
+	mkdir $install_dir/kraken2_database
+	mkdir $install_dir/checkm_database
+	#mkdir $install_dir/gtdb_database
+	tar -zxv -C $install_dir/kraken2_database -f $install_dir/k2_pluspf_20240605.tar.gz  
+	tar -zxv -C $install_dir/checkm_database -f $install_dir/checkm_data_2015_01_16.tar.gz
+	#tar -zxv -C $install_dir/gtdb_database -f $install_dir/gtdbtk_r207_v2_data.tar.gz
 }
+
+set_env(){
+	local install_dir=$1
+	echo "software_dir: $install_dir" >config.yaml
+}
+
 
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <install_directory>"
@@ -70,4 +85,5 @@ fi
 
 install_software 
 set_database "$install_dir"
+set_env "$install_dir"
 echo "Script execution completed."
