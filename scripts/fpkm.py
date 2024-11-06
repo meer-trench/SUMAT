@@ -8,12 +8,11 @@ def main(insert_size, stat_file, jgi_file):
         for line in f:
             line = line.strip()
             parts = line.split(':')
-            if len(parts) == 2:
+            if len(parts) >= 2:
                 key = parts[0].strip()
-                value = parts[1].strip()
+                value = parts[1].split('#')[0].strip()
                 if value.isdigit():
                     stat[key] = int(value)
-    
     # 获取 'raw total sequences' 的值
     N = stat.get('raw total sequences', 0)
     
@@ -23,10 +22,10 @@ def main(insert_size, stat_file, jgi_file):
         print('\t'.join(headers) + '\tFPKM')
         
         for line in f:
-            line = line.strip()
+            line = line.strip("\n")
             fields = line.split('\t')
-            if len(fields) > 3 and fields[3].isdigit():
-                fpkm = int(fields[3]) * 10**9 / (int(insert_size) * N)
+            if len(fields) > 3 :
+                fpkm = float(fields[3]) * 10**9 / (int(insert_size) * N)
                 print(f"{line}\t{fpkm:.4e}")
 
 if __name__ == "__main__":

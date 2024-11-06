@@ -23,6 +23,7 @@ if config['resources'] == 'Sufficient':
                  path + 'data/pushcore_vamb_bins/',
                  path + 'data/pushcore_bin_refinement/',
                  path + 'data/pushcore_bin_passed_all/',
+		 path + 'data/bins_bowtie2_index/',
                  path + 'data/pushcore_gather_all_checkm/'])
 
     for file in os.listdir(group_path):
@@ -362,7 +363,7 @@ rule binning_concoct:
         concoct_coverage_table.py {params.path}/work_files/assembly_10K.bed {input.bam} > {params.path}/work_files/concoct_depth.txt
         concoct -l 1500 -t {threads} --coverage_file {params.path}/work_files/concoct_depth.txt --composition_file {params.path}/work_files/assembly_10K.fa -b {params.path}/work_files/
         merge_cutup_clustering.py {params.path}/work_files/clustering_gt1500.csv > {params.path}/work_files/clustering_gt1500_merged.csv
-        split_concoct_bins.py {params.path}work_files/clustering_gt1500_merged.csv {input.ctg} {params.path}/concoct_bins
+        python scripts/split_concoct_bins.py {params.path}work_files/clustering_gt1500_merged.csv {input.ctg} {params.path}/concoct_bins
         touch {output.mk}
         """
 
@@ -385,7 +386,6 @@ rule metawrap_bin_refinement:
     shell:
         """
         set +e
-	#checkm data setRoot {params.db}
         python scripts/run_metawrap_bin_refinement.py {params.metabat2} {params.maxbin2} {params.concoct} {params.path} {threads}
         if [ -d "{params.path}metawrap_50_10_bins/" ]
         then
@@ -457,9 +457,9 @@ rule profiling_bowtie2_index:
     shell:
         """
         for i in `ls {params.in_path}`;do
-            awk -v f=$i 'FNR==1{sub(".bin","",f);sub("fa","",f)};/^>/{sub(">",">"f,$0)}{print}' {in_path}/$i
-        done > drep_all/drep_all.fasta
-        bowtie2-build --threads {thread} {params.out_path}/drep_all.fasta {params.out_path}/drep_all
+            awk -v f=$i 'FNR==1{{sub(".bin","",f);sub("fa","",f)}};/^>/{{sub(">",">"f,$0)}}{{print}}' {params.in_path}/$i
+        done > {params.out_path}drep_all.fasta
+        bowtie2-build --threads {threads} {params.out_path}/drep_all.fasta {params.out_path}/drep_all
         touch {output.mk}
         """
 rule profiling_bowtie2:
@@ -478,10 +478,11 @@ rule profiling_bowtie2:
     shell:
         """
         if [ "{params.sq}" == "pe" ]; then
-            bowtie2 -p {thread} -x {params.in_path}/drep_all -S {params.sam} -1 {input.a1} -2 {params.a2}
+            bowtie2 -p {threads} -x {params.in_path}/drep_all -S {params.sam} -f -1 {input.a1} -2 {params.a2}
         else
-            bowtie2 -p {thread} -x {params.in_path}/drep_all -S {params.sam} -1 {input.a1}
-        samtools view -@ {thread} -b {params.sam}| samtools sort -@ {thread} -o {output.bam}
+            bowtie2 -p {threads} -x {params.in_path}/drep_all -S {params.sam} -f -1 {input.a1}
+        fi
+	samtools view -@ {threads} -b {params.sam}| samtools sort -@ {threads} -o {output.bam}
         rm {params.sam}
         touch {output.mk}
         """
@@ -507,7 +508,7 @@ rule profiling_fpkm_all:
         fpkm = expand(path + 'data/profiling_fpkm/{sample}.fpkm', sample=SAMPLES)
     output:
         mk = path + 'data/markers/profiling_fpkm_all/all.mk',
-        profile = path + 'data/results/all.fpkm',
+        profile = path + 'data/profile/all.fpkm',
     shell:
         """
         python scripts/mags_profiling.py {input.fpkm} {output.profile}
@@ -537,10 +538,13 @@ rule checkm:
     params:
         sn = '{pushcore}' if config['resources'] == 'Sufficient' else '{sample}' if config['resources'] == 'Shortage' else None,
         out_path = path + 'data/pushcore_checkm/{pushcore}/' if config['resources'] == 'Sufficient' else path + 'data/checkm/{sample}/'  if config['resources'] == 'Shortage' else '',
-        in_path = path + 'data/pushcore_vamb_bins/{pushcore}/bins/' if config['resources'] == 'Sufficient' else  path + 'data/binning/{sample}/metabat2_bins/'  if config['resources'] == 'Shortage' else ''
+        in_path = path + 'data/pushcore_vamb_bins/{pushcore}/bins/' if config['resources'] == 'Sufficient' else  path + 'data/binning/{sample}/metabat2_bins/'  if config['resources'] == 'Shortage' else '',
+	route = config ['resources']
     shell:
         """
-	#for file in {params.in_path}*.fa; do mv $file {params.in_path}$(basename $file .fa).fna; done
+	if [ "{params.route}" == "Shortage" ]; then
+		for file in {params.in_path}*.fa; do mv $file {params.in_path}$(basename $file .fa).fna; done
+	fi
         checkm lineage_wf {params.in_path} {params.out_path} -t {threads} -x fna -f {output.rp} --tab_table
         touch {output.mk}
         """

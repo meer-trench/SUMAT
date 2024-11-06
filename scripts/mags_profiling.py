@@ -2,7 +2,7 @@ import os
 import sys
 from collections import defaultdict
 
-def process_fpkm_files(file_list_str, output_profile_file):
+def process_fpkm_files(file_list):
     HS = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
     sample_counts = defaultdict(lambda: defaultdict(int))
     sample_sums = defaultdict(float)
@@ -10,9 +10,9 @@ def process_fpkm_files(file_list_str, output_profile_file):
     sample_names = set()
     max_lines = 0
 
-    # 解析逗号分隔的文件列表字符串
-    file_list = [file_path.strip() for file_path in file_list_str.split(',') if file_path.strip()]
-
+    #file_list = [file_path.strip() for file_path in file_list_str.split(' ') if file_path.strip()]
+    file_list.pop(0)
+    output_profile_file = file_list.pop()
     if not file_list:
         print(f"No files provided in the list: {file_list_str}")
         return
@@ -32,6 +32,8 @@ def process_fpkm_files(file_list_str, output_profile_file):
                 if len(fields) < 5:
                     continue
                 otu, length, _, _, fpkm = fields
+                if otu == 'contigName':
+                    continue
                 fpkm = float(fpkm)
                 HS['V'][otu][base] = fpkm
                 if fpkm > 0:
@@ -56,11 +58,7 @@ def process_fpkm_files(file_list_str, output_profile_file):
             profile_file.write("\n")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python script.py <file_list_str> <output_profile_file>")
-        sys.exit(1)
+    file_list = sys.argv
+    #output_profile_file = sys.argv[2]
 
-    file_list_str = sys.argv[1]
-    output_profile_file = sys.argv[2]
-
-    process_fpkm_files(file_list_str, output_profile_file)
+    process_fpkm_files(file_list)
