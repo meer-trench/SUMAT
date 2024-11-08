@@ -8,3 +8,5 @@ test2/
 wget-log
 .gitignore
 log.tsv
+SUMAT_demo/
+SUMAT_showdata/

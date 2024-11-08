@@ -50,11 +50,12 @@ if unmerged_file[0].endswith('.gz'):
 else:
     print('Input file has to be .gz')
     sys.exit()
-if unmerged_file[1].endswith('.gz'):
-    pass
-else:
-    print('Input file has to be .gz')
-    sys.exit()
+#if unmerged_file[1].endswith('.gz'):
+
+#pass
+#else:
+#    print('Input file has to be .gz')
+#    sys.exit()
 
 # Get FASTQ path
 path= {}
@@ -63,7 +64,7 @@ with open(input_file, 'r') as f: # Each line is a path to a sequencing lane
         line = line.strip('\n')
         content = []
         for file in os.listdir(raw_path + line):
-            if file.endswith('.fq.gz'):
+            if file.endswith('.fq.gz') or file.endswith('fastq.gz'):
                 content.append(file)
         content.sort()
         if len(content) != 2:

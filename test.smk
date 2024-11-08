@@ -189,8 +189,9 @@ rule megahit_se:
     shell:
         """
         #if [ -d "{params.path}" ];then rm -r {params.path};else echo Folder not exist, MEGAHIT good to go.;fi
-        if [ -d "{params.path}" ]; then megahit --continue -o {params.path}; else megahit -1 {input.a1} -t {threads} --presets meta-sensitive -o {params.path}; fi
-        """
+        if [ -d "{params.path}" ]; then megahit --continue -o {params.path}; else megahit -r {input.a1} -t {threads} --presets meta-sensitive -o {params.path}; fi
+        touch {output.mk}
+	"""
 
 rule megahit_result:
     input:
@@ -543,9 +544,9 @@ rule checkm:
     shell:
         """
 	if [ "{params.route}" == "Shortage" ]; then
-		for file in {params.in_path}*.fa; do mv $file {params.in_path}$(basename $file .fa).fna; done
+		for file in {params.in_path}*.fa; do mv $file {params.in_path}$(basename $file .fna).fa; done
 	fi
-        checkm lineage_wf {params.in_path} {params.out_path} -t {threads} -x fna -f {output.rp} --tab_table
+        checkm lineage_wf {params.in_path} {params.out_path} -t {threads} -x fa -f {output.rp} --tab_table
         touch {output.mk}
         """
 
@@ -605,6 +606,7 @@ rule gather_all_checkm_metabat2:
     shell:
         """
         touch {output.csv}
+	echo "genome,completeness,contamination" > {output.csv}
         cat {input.csv} >> {output.csv}
         """
 
@@ -618,7 +620,7 @@ rule drep_info:
         """
         touch {output.csv}
         echo "genome,completeness,contamination" > {output.csv}
-        cat {input.csv} {input.csv_vamb}>> {output.csv}
+        cat {input.csv} {input.csv_vamb} > {output.csv}
         """
 
 

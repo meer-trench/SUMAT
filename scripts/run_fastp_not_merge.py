@@ -30,7 +30,10 @@ input_file = args.input
 raw_path = args.raw
 if not raw_path.endswith('/'): raw_path += '/'
 threads = int(args.threads/2)
+#if args.reverse:
 unmerged_file = (args.forward, args.reverse)
+#else:
+#    unmerged_file = (args.forward)
 #ad1 = args.ad1
 #ad2 = args.ad2
 log_file = args.log
@@ -42,11 +45,11 @@ if unmerged_file[0].endswith('.gz'):
 else:
     print('Input file has to be .gz')
     sys.exit()
-if unmerged_file[1].endswith('.gz'):
-    pass
-else:
-    print('Input file has to be .gz')
-    sys.exit()
+#if unmerged_file[1].endswith('.gz'):
+#    pass
+#else:
+#    print('Input file has to be .gz')
+#    sys.exit()
 
 # Get FASTQ path
 path= {}
@@ -55,7 +58,7 @@ with open(input_file, 'r') as f: # Each line is a path to a sequencing lane
         line = line.strip('\n')
         content = []
         for file in os.listdir(raw_path + line):
-            if file.endswith('.fq.gz'):
+            if file.endswith('.fq.gz') or file.endswith('fastq.gz'):
                 content.append(file)
         content.sort()
         # if len(content) != 2:
@@ -96,7 +99,7 @@ else:
     cmd2 = ['seqtk seq -A', tmp[0] + '.nomerged.1.fq.gz', '>', unmerged_file[0][:-3]]
     print(' '.join(cmd2))
     if not dry_run: os.system(' '.join(cmd2))
-    if len(unmerged_file) == 2:
+    if unmerged_file[1]:
         cmd3 = ['seqtk seq -A', tmp[0] + '.nomerged.2.fq.gz', '>', unmerged_file[1][:-3]]
         print(' '.join(cmd3))
         if not dry_run: os.system(' '.join(cmd3))
@@ -105,7 +108,7 @@ else:
             cmd2 = ['seqtk seq -A', item + '.nomerged.1.fq.gz', '>>', unmerged_file[0][:-3]]
             print(' '.join(cmd2))
             if not dry_run: os.system(' '.join(cmd2))
-            if len(unmerged_file) == 2:
+            if unmerged_file[1]:
                 cmd3 = ['seqtk seq -A', item + '.nomerged.2.fq.gz', '>>', unmerged_file[1][:-3]]
                 print(' '.join(cmd3))
                 if not dry_run: os.system(' '.join(cmd3))
@@ -117,7 +120,7 @@ cmd += [unmerged_file[0][:-3]]
 print(' '.join(cmd))
 if not dry_run: os.system(' '.join(cmd))
 
-if len(unmerged_file) == 2:
+if unmerged_file[1]:
     cmd = ['pigz']
     cmd += ['-p ' + str(threads)]
     cmd += [unmerged_file[1][:-3]]
@@ -130,6 +133,7 @@ if dry_run:
 else:
     for item in tmp:
         os.remove(item + '.nomerged.1.fq.gz')
-        os.remove(item + '.nomerged.2.fq.gz')
+        if unmerged_file[1]:
+            os.remove(item + '.nomerged.2.fq.gz')
 print('TMP files removed')
 # print('QCed files in {0} {1}'.format(unmerged_file[0], unmerged_file[1]))

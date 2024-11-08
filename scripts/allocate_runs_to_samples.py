@@ -50,25 +50,25 @@ for key, value in samples.items():
     path_checker = [False] * len(value) # check if all paths are available for current sample
     for index, path in enumerate(value):
         # check if we have two fq.gz files under current path
-        file_checker = [False, False]
+        #file_checker = [False, False]
         fq_files = []
         #try:
         for file in os.listdir(raw_path + path):
-            if file.endswith('.fq.gz'):
+            if file.endswith('.fq.gz') or file.endswith('fastq.gz'):
                 fq_files.append(file)
         fq_files.sort()
-        #print(fq_files)
-        if len(fq_files) == 2 and fq_files[0].endswith('_1.fq.gz') and fq_files[1].endswith('_2.fq.gz'):
-            path_checker[index] = True
+        #if len(fq_files) == 2 and fq_files[0].endswith('_1.fq.gz') and fq_files[1].endswith('_2.fq.gz'):
+        #    path_checker[index] = True
         #except FileNotFoundError:
             #path_checker[index] = False
-    if sum(path_checker) == len(path_checker): # If pass the check
-        samples_avail[key] = tuple(value)
-        with open(log_file, 'a') as f:
-            f.write('{0}\t{1}\n'.format(key, len(value)))
-    else:
-        with open(log_file, 'a') as f:
-            f.write('{0}\t{1}\n'.format(key, 0))
+    #if sum(path_checker) == len(path_checker): # If pass the check
+    samples_avail[key] = tuple(value)
+    with open(log_file, 'a') as f:
+        f.write('{0}\t{1}\n'.format(key, len(value)))
+    #else:
+    
+    #with open(log_file, 'a') as f:
+    #        f.write('{0}\t{1}\n'.format(key, 0))
 
 print('Found {0}/{1} samples under {2}'.format(len(samples_avail), len(samples), raw_path))
 
@@ -84,7 +84,6 @@ else:
         sys.exit()
     else:
         print('{0} is ready.'.format(destiny_path + 'data/samples'))
-    
 for key, value in samples_avail.items():
     target_file = destiny_path + 'data/samples/' + key + '.path'
     with open(target_file, 'w') as f:

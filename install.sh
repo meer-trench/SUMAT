@@ -19,9 +19,9 @@ install_conda() {
     local install_dir=$1
     echo "Installing Conda to the directory: $install_dir..."
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-    bash miniconda.sh -b -p "$install_dir"
+    bash miniconda.sh -b -p "$install_dir"/miniconda
     #rm miniconda.sh
-    export PATH="$install_dir/bin:$PATH"
+    export PATH="$install_dir/miniconda/bin:$PATH"
     export PYTHONPATH="$install_dir/bin"
     echo "Conda installation completed."
 }
@@ -51,7 +51,7 @@ install_software() {
 
 set_database() {
 	local install_dir=$1
-	export PATH="$install_dir/bin:$install_dir/envs/gtdbtk-2.1.1/bin:$install_dir/envs/vamb/bin:$install_dir/envs/metawrap-env/bin:$PATH"
+	export PATH="$install_dir/miniconda/bin:$install_dir/miniconda/envs/gtdbtk-2.1.1/bin:$install_dir/miniconda/envs/vamb/bin:$install_dir/miniconda/envs/metawrap-env/bin:$PATH"
 	download-db.sh
 	metaphlan --install
 	wget -P $install_dir https://genome-idx.s3.amazonaws.com/kraken/k2_pluspf_20240605.tar.gz
@@ -67,7 +67,7 @@ set_database() {
 
 set_env(){
 	local install_dir=$1
-	echo "software_dir: $install_dir" >config.yaml
+	echo "software_dir: $install_dir/miniconda" >config.yaml
 }
 
 
