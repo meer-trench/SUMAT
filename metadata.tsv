@@ -1,2 +1,1 @@
-MT03_enzy_WGS	/nas/MT03_enzy_WGS_1.fq.gz	/nas/MT03_enzy_WGS_2.fq.gz	enzy_WGS
-MT04_enzy_WGS	/nas/MT04_enzy_WGS_1.fq.gz	/nas/MT04_enzy_WGS_2.fq.gz	enzy_WGS
+demo	showcase_data/showcase_data_R1.fastq.gz	showcase_data/showcase_data_R2.fastq.gz	showcase_group

@@ -27,7 +27,7 @@ RUN /opt/conda/bin/conda install -c pytorch pytorch torchvision cudatoolkit=10.2
 RUN /opt/conda/bin/mamba create --name vamb vamb
 RUN /opt/conda/bin/mamba create -n gtdbtk-2.1.1 -c conda-forge -c bioconda gtdbtk=2.1.1
 RUN /opt/conda/bin/metaphlan --install 
-ENV PATH=/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:/opt/conda/bin:$PATH
+ENV PATH=/opt/conda/bin:opt/conda/envs/gtdbtk-2.1.1/bin:/opt/conda/envs/vamb/bin:/opt/conda/envs/metawrap-env/bin:$PATH
 
 
 #ENTRYPOINT ["bash"]

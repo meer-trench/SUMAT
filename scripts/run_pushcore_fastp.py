@@ -78,10 +78,10 @@ for sample in pushcore.keys():
         tmp.append(tmp_seq)
         cmd = ['fastp']
         cmd += ['-i ' + raw_path + path + '/' + path_fastq[path][0]]
-        if len(path) == 2:
+        if len(path) >= 2:
             cmd += ['-I ' + raw_path + path + '/' + path_fastq[path][1]]
         cmd += ['--out1 ' + tmp_seq + '.unmerged.1.fq.gz']
-        if len(path) == 2:
+        if len(path) >= 2:
             cmd += ['--out2 ' + tmp_seq + '.unmerged.2.fq.gz']
 #        if mgi: cmd += ['--adapter_sequence ' + ad1]
 #        if mgi: cmd += ['--adapter_sequence_r2 ' + ad2]
@@ -96,24 +96,24 @@ for sample in pushcore.keys():
 
     # Concat all finished file, and remove the temp files
     print('Write unmerged to {0} {1}'.format(unmerged_file[0], unmerged_file[1]))
-    cmd2 = ['seqtk seq ', tmp[0] + '.unmerged.1.fq.gz', ' > ', unmerged_file[0][:-3]]
+    cmd2 = ['seqtk seq ', tmp[0] + '.unmerged.1.fq.gz', ' > ', unmerged_file[0]]
     if unmerged_file[1]:
-        cmd3 = ['seqtk seq ', tmp[0] + '.unmerged.2.fq.gz', ' > ', unmerged_file[1][:-3]]
+        cmd3 = ['seqtk seq ', tmp[0] + '.unmerged.2.fq.gz', ' > ', unmerged_file[1]]
         print(' '.join(cmd2))
     if not dry_run: os.system(' '.join(cmd2))
-    if unmerged_file[1]:
+    if len(path) >= 2:
         print(' '.join(cmd3))
         if not dry_run: os.system(' '.join(cmd3))
     if len(tmp) > 1: # If more than one path presents
         for item in tmp[1:]:
-            cmd2 = ['seqtk seq ', item + '.unmerged.1.fq.gz', ' >> ', unmerged_file[0][:-3]]
-            if unmerged_file[1]:
-                cmd3 = ['seqtk seq ', item + '.unmerged.2.fq.gz', ' >> ', unmerged_file[1][:-3]]
+            cmd2 = ['cat ', item + '.unmerged.1.fq.gz', ' >> ', unmerged_file[0]]
+            if len(path) >= 2:
+                cmd3 = ['cat ', item + '.unmerged.2.fq.gz', ' >> ', unmerged_file[1]]
             print(' '.join(cmd2))
-            if not dry_run: os.system(' '.join(cmd2))
-            if unmerged_file[1]:
+            os.system(' '.join(cmd2))
+            if len(path) >= 2:
                 print(' '.join(cmd3))
-                if not dry_run: os.system(' '.join(cmd3))
+                os.system(' '.join(cmd3))
 
     # Remove TMP files
     if dry_run:
@@ -121,20 +121,20 @@ for sample in pushcore.keys():
     else:
         for item in tmp:
             os.remove(item + '.unmerged.1.fq.gz')
-            if unmerged_file[1]:
+            if len(path) == 2:
                 os.remove(item + '.unmerged.2.fq.gz')
     print('TMP files removed')
     #print('QCed files for {0} in {1} {2}'.format(sample, unmerged_file[0], unmerged_file[1]))
 
     # Pigz all FASTA files
-    cmd = ['pigz']
-    cmd += ['-p ' + str(threads)]
-    cmd += [unmerged_file[0][:-3]]
-    print(' '.join(cmd))
-    if not dry_run: os.system(' '.join(cmd))
+    #cmd = ['pigz']
+    #cmd += ['-p ' + str(threads)]
+    #cmd += [unmerged_file[0]]
+    #print(' '.join(cmd))
+    #if not dry_run: os.system(' '.join(cmd))
 
-    cmd = ['pigz']
-    cmd += ['-p ' + str(threads)]
-    cmd += [unmerged_file[1][:-3]]
-    print(' '.join(cmd))
-    if not dry_run: os.system(' '.join(cmd))
+    #cmd = ['pigz']
+    #cmd += ['-p ' + str(threads)]
+    #cmd += [unmerged_file[1]]
+    #print(' '.join(cmd))
+    #if not dry_run: os.system(' '.join(cmd))

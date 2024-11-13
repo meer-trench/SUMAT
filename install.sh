@@ -68,6 +68,9 @@ set_database() {
 set_env(){
 	local install_dir=$1
 	echo "software_dir: $install_dir/miniconda" >config.yaml
+	echo "export PATH=\"$install_dir/miniconda/bin:$install_dir/miniconda/envs/gtdbtk-2.1.1/bin:$install_dir/miniconda/envs/vamb/bin:$install_dir/miniconda/envs/metawrap-env/bin:\$PATH\"" >> ~/.bashrc
+	echo "export PATH=\"$install_dir/miniconda/bin:$install_dir/miniconda/envs/gtdbtk-2.1.1/bin:$install_dir/miniconda/envs/vamb/bin:$install_dir/miniconda/envs/metawrap-env/bin:\$PATH\"" > env.sh
+	#source ~/.bashrc
 }
 
 

@@ -47,7 +47,7 @@ with open(input_file, 'r') as f:
 # Find samples available on current cluster
 samples_avail = {}
 for key, value in samples.items():
-    path_checker = [False] * len(value) # check if all paths are available for current sample
+    #path_checker = [False] * len(value) # check if all paths are available for current sample
     for index, path in enumerate(value):
         # check if we have two fq.gz files under current path
         #file_checker = [False, False]

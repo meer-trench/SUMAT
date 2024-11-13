@@ -49,19 +49,24 @@ print('Pushcore ({0}) contains {1} samples'.format(input_file, len(pushcore)))
 # Add the QCed fasta to each sample
 for sample in pushcore.keys():
     fastq = (fastq_path + '/' + sample + '.unmerged.1.fq.gz', fastq_path + '/' + sample + '.unmerged.2.fq.gz')
-    print(fastq)
+    #print(fastq)
     if os.path.isfile(fastq[0]) and os.path.isfile(fastq[1]):
         pushcore[sample] = fastq
     else:
-        print('For pushcore {0}, sample {1} not found matched fastq data'.format(pn, sample))
-        sys.exit(1)
+        fastq1 =(fastq[0],None)
+        pushcore[sample] = fastq1
+    #    print('For pushcore {0}, sample {1} not found matched fastq data'.format(pn, sample))
+       # sys.exit(1)
 
 
 def bwa(index, threads, fq, output, dr):
     cmd = ['bwa mem']
     cmd += ['-t ' + str(threads)]
     cmd += [index]
-    cmd += [fq[0] + ' ' + fq[1]]
+    if fq[1]:
+        cmd += [fq[0] + ' ' + fq[1]]
+    else:
+        cmd += ['-p ' + fq[0]]
     cmd += ['| ' + 'samtools sort ' + '-@ ' + str(threads) +  ' -o ' + output + ' -']
     cmd = ' '.join(cmd)
     print(cmd)

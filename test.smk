@@ -543,8 +543,8 @@ rule checkm:
 	route = config ['resources']
     shell:
         """
-	if [ "{params.route}" == "Shortage" ]; then
-		for file in {params.in_path}*.fa; do mv $file {params.in_path}$(basename $file .fna).fa; done
+	if [ "{params.route}" == "Sufficient" ]; then
+		for file in {params.in_path}*.fna; do mv $file {params.in_path}$(basename $file .fna).fa; done
 	fi
         checkm lineage_wf {params.in_path} {params.out_path} -t {threads} -x fa -f {output.rp} --tab_table
         touch {output.mk}
@@ -657,7 +657,6 @@ rule pushcore_rename_concat:
 
 rule pushcore_bwa_index:
     input:
-        mk = path + 'data/markers/pushcore_fastp/{pushcore}.mk',
         ctg = path + 'data/pushcore_contigs/{pushcore}.fa'
     output:
         mk = path + 'data/markers/pushcore_bwa_index/{pushcore}.mk'
@@ -681,7 +680,8 @@ rule pushcore_bwa_index:
 rule pushcore_bwa_mem:
     input:
         pc = path + 'data/pushcores/{pushcore}.path',
-        mk = path + 'data/markers/pushcore_bwa_index/{pushcore}.mk'
+        mk1 = path + 'data/markers/pushcore_fastp/{pushcore}.mk',
+	mk2 = path + 'data/markers/pushcore_bwa_index/{pushcore}.mk'
     output:
         mk = path + 'data/markers/pushcore_bwa_mem/{pushcore}.mk'
     params:
