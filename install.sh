@@ -33,7 +33,7 @@ install_software() {
 
     conda install -y megahit  snakemake kraken2  metawrap  bwa
 
-    conda install -y python=3.10 && conda -y install metaphlan=4.1
+    conda install -y python=3.10 && conda install -y metaphlan=4.1
     conda install -y seqtk pigz
     conda install -y bracken fastp
 
@@ -55,13 +55,13 @@ set_database() {
 	download-db.sh
 	metaphlan --install
 	wget -P $install_dir https://genome-idx.s3.amazonaws.com/kraken/k2_pluspf_20240605.tar.gz
-	#wget -P $install_dir https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz 
+	wget -P $install_dir https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz 
 	#wget -P $install_dir https://data.gtdb.ecogenomic.org/releases/release207/207.0/auxillary_files/gtdbtk_r207_v2_data.tar.gz
 	mkdir $install_dir/kraken2_database
-	#mkdir $install_dir/checkm_database
+	mkdir $install_dir/checkm_database
 	#mkdir $install_dir/gtdb_database
 	tar -zxv -C $install_dir/kraken2_database -f $install_dir/k2_pluspf_20240605.tar.gz  
-	#tar -zxv -C $install_dir/checkm_database -f $install_dir/checkm_data_2015_01_16.tar.gz
+	tar -zxv -C $install_dir/checkm_database -f $install_dir/checkm_data_2015_01_16.tar.gz
 	#tar -zxv -C $install_dir/gtdb_database -f $install_dir/gtdbtk_r207_v2_data.tar.gz
 }
 
